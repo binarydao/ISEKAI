@@ -60,7 +60,7 @@ public class ChipBehaviour : MonoBehaviour
             if (part >= 1)
             {
                 isDestroying = false;
-                GameBehaviour.instance.destroyChip(this);
+                GameBehaviour.instance.DestroyChip(this);
                 Destroy(gameObject);
             }
             else
@@ -189,7 +189,12 @@ public class ChipBehaviour : MonoBehaviour
     //it's... magic gone
     internal void StartDestroy()
     {
-        if (isDestroying) return;
+        if (isDestroying)
+        {
+            Debug.Log("Already destroying, return");
+            return;
+        }
+            
 
         GameBehaviour.instance.isFieldActive = false;
 

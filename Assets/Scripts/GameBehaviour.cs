@@ -28,7 +28,7 @@ public class GameBehaviour : MonoBehaviour
 
 
 
-    private readonly float[,] previousPositionY = new float[MAX_ROWS, MAX_COLS];
+    //private readonly float[,] previousPositionY = new float[MAX_ROWS, MAX_COLS];
     private AudioSource audioSource;
 
     private int[] bonusRow = new int[MAX_COLS];
@@ -45,7 +45,7 @@ public class GameBehaviour : MonoBehaviour
     private bool isLose;
 
     private bool isMovingBack;
-    private bool isMuted;
+    private readonly bool isMuted;
     private bool isPaused;
 
     private bool isShowRules;
@@ -124,33 +124,54 @@ public class GameBehaviour : MonoBehaviour
         field.SetActive(!isPaused);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         //some chips are still falling using physics?
         if (isWaitingChipsFall)
         {
-            bool isSomethingFalling = false;
+            isWaitingChipsFall = false;
+            float maxY = 2.4f;
             for (int i = 0; i < MAX_ROWS; i++)
+            {
                 for (int j = 0; j < MAX_COLS; j++)
                 {
                     //rigidbody.velocity not works there well; WARNING: can be destroyed between updates
-                    if (chipArray[i, j] && chipArray[i, j].rigidbody &&
-                        Math.Abs(chipArray[i, j].rigidbody.transform.position.y - previousPositionY[i, j]) > 0.00001)
-                        isSomethingFalling = true;
                     if (chipArray[i, j] && chipArray[i, j].rigidbody)
-                        previousPositionY[i, j] = chipArray[i, j].rigidbody.transform.position.y;
-                }
+                    {
+                        
+                        if (chipArray[i, j].rigidbody.velocity.magnitude > 3)
+                        {
+                            isWaitingChipsFall = true;
+                        }
 
-            if (!isSomethingFalling)
+                        if (chipArray[i, j].rigidbody.position.y > maxY)
+                        {
+                            chipArray[i, j].rigidbody.MovePosition(new Vector3(chipArray[i, j].rigidbody.position.x, maxY, 0));
+                        }
+                        if (chipArray[i, j].rigidbody.velocity.y > 0)
+                        {
+                            chipArray[i, j].rigidbody.velocity = new Vector3(0, 0, 0);
+                        }
+
+                    }
+                        
+                }
+            }
+
+            if (!isWaitingChipsFall )
             {
-                isWaitingChipsFall = false;
                 if (!FullMatchCheck())
+                {
                     CheckWinLose();
+                }
             }
         }
         else
         {
-            if (!isHintShowed && Time.time - startTurnTime > TIME_BEFORE_HINT) ShowHint();
+            if (!isHintShowed && Time.time - startTurnTime > TIME_BEFORE_HINT)
+            {
+                ShowHint();
+            }
         }
     }
 
@@ -188,13 +209,19 @@ public class GameBehaviour : MonoBehaviour
         excludes.Add(GetLinearIndex(2, 2));
 
         for (int i = 0; i < MAX_ROWS; i++)
+        {
             for (int j = 0; j < MAX_COLS; j++)
             {
-                if (sameChips.Contains(chipArray[i, j])) continue;
+                if (sameChips.Contains(chipArray[i, j]))
+                {
+                    continue;
+                }
+
                 int randomPlace = GetRandomWithExcludes(MAX_ROWS * MAX_COLS, excludes);
                 linear[randomPlace] = chipArray[i, j];
                 excludes.Add(randomPlace);
             }
+        }
 
         //move
         for (int i = 0; i < linear.Length; i++)
@@ -205,7 +232,10 @@ public class GameBehaviour : MonoBehaviour
         }
 
         //move linear array back to 2D
-        for (int i = 0; i < linear.Length; i++) chipArray[GetRowOfLinear(i), GetColOfLinear(i)] = linear[i];
+        for (int i = 0; i < linear.Length; i++)
+        {
+            chipArray[GetRowOfLinear(i), GetColOfLinear(i)] = linear[i];
+        }
     }
 
     //2D to linear: row*MAX_ROWS+col
@@ -230,12 +260,19 @@ public class GameBehaviour : MonoBehaviour
     {
         var sameChips = new List<ChipBehaviour>();
         for (int i = 0; i < MAX_ROWS; i++)
+        {
             for (int j = 0; j < MAX_COLS; j++)
+            {
                 if (SafeGetType(i, j) == currentType)
                 {
                     sameChips.Add(chipArray[i, j]);
-                    if (sameChips.Count >= 3) return sameChips;
+                    if (sameChips.Count >= 3)
+                    {
+                        return sameChips;
+                    }
                 }
+            }
+        }
 
         //did not find enough chips of this type, search next recursively
         return GetAnySameChips(currentType + 1);
@@ -245,11 +282,17 @@ public class GameBehaviour : MonoBehaviour
     private void CheckWinLose()
     {
         if (scorePoints >= SCORES_TO_WIN)
+        {
             isWin = true;
+        }
         else if (turnsLeft <= 0)
+        {
             isLose = true;
+        }
         else
+        {
             EnablePlayerControl(false);
+        }
     }
 
     //check and collect chips
@@ -268,7 +311,9 @@ public class GameBehaviour : MonoBehaviour
 
         //horizontal check
         for (int i = 0; i < MAX_ROWS; i++)
+        {
             for (int j = 0; j < MAX_COLS; j++)
+            {
                 //new line
                 if (j == 0 || currentType < 0 || currentType != chipArray[i, j].Type)
                 {
@@ -288,10 +333,13 @@ public class GameBehaviour : MonoBehaviour
                 {
                     line.Add(chipArray[i, j]);
                 }
+            }
+        }
 
         line = new List<ChipBehaviour>();
         //vertical check
         for (int j = 0; j < MAX_COLS; j++)
+        {
             for (int i = 0; i < MAX_ROWS; i++)
             {
                 //Debug.Log("currentType[" + i +  ", " + j + "]: " + chipArray[i, j].Type);
@@ -317,11 +365,17 @@ public class GameBehaviour : MonoBehaviour
                     line.Add(chipArray[i, j]);
                 }
             }
+        }
 
         for (int j = 0; j < MAX_COLS; j++)
+        {
             for (int i = 0; i < MAX_ROWS; i++)
+            {
                 isNewCombinations = SquareCheck(chipArray[i,j]) || isNewCombinations;
+            }
+        }
 
+        Debug.Log("isNewCombinations: " + isNewCombinations);
         if (isNewCombinations)
         {
             CollectMatches();
@@ -333,8 +387,11 @@ public class GameBehaviour : MonoBehaviour
 
     private void CollectMatches()
     {
-
-        foreach (var iterChip in DeleteChipsList) iterChip.StartDestroy();
+        Debug.Log("here is new matches!");
+        foreach (var iterChip in DeleteChipsList)
+        {
+            iterChip.StartDestroy();
+        }
     }
 
     internal void Mute()
@@ -354,16 +411,19 @@ public class GameBehaviour : MonoBehaviour
         if (isShowRules)
         {
             //GUI.ModalWindow(0, new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 100), showMission,"Mission");
-            showMission(0);
+            ShowMission(0);
         }
         else if (isWin)
-            GUI.ModalWindow(1, new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 100), showWin, "YOU WIN!");
+        {
+            GUI.ModalWindow(1, new Rect((Screen.width / 2) - 150, (Screen.height / 2) - 75, 300, 100), ShowWin, "YOU WIN!");
+        }
         else if (isLose)
-            GUI.ModalWindow(2, new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 100), showLose,
-                "You lose");
+        {
+            GUI.ModalWindow(2, new Rect((Screen.width / 2) - 150, (Screen.height / 2) - 75, 300, 100), ShowLose, "You lose");
+        }
     }
 
-    private void showMission(int windowID)
+    private void ShowMission(int windowID)
     {
         /*GUI.Label(new Rect(65, 20, 200, 250),
             "Get " + SCORES_TO_WIN + " scores within " + TURNS_FOR_GAME + " turns. Good luck!");
@@ -377,25 +437,36 @@ public class GameBehaviour : MonoBehaviour
         //}
     }
 
-    private void showWin(int windowID)
+    private void ShowWin(int windowID)
     {
         GUI.Label(new Rect(65, 20, 200, 250), "You beat this game, congratulation! Wanna try again?");
-        if (GUI.Button(new Rect(110, 60, 80, 30), "Restart")) SceneManager.LoadScene("BaseScene");
+        if (GUI.Button(new Rect(110, 60, 80, 30), "Restart"))
+        {
+            SceneManager.LoadScene("BaseScene");
+        }
     }
 
-    private void showLose(int windowID)
+    private void ShowLose(int windowID)
     {
         GUI.Label(new Rect(65, 20, 200, 250), "You lose. Do you want another try?");
-        if (GUI.Button(new Rect(110, 60, 80, 30), "Restart")) SceneManager.LoadScene("BaseScene");
+        if (GUI.Button(new Rect(110, 60, 80, 30), "Restart"))
+        {
+            SceneManager.LoadScene("BaseScene");
+        }
     }
 
     //initial field generation. No autocollect at start but at least one possible move
     private void GenerateField()
     {
         if (MAX_ROWS < 4 || MAX_COLS < 4)
+        {
             throw new Exception("Too small field for this game. Generate at least 4*4 field using MAX_ROWS and MAX_COLS constants.");
+        }
+
         if (MAX_ROWS > 9 || MAX_COLS > 18)
+        {
             throw new Exception("Too big field for this game. Generate no more than 9*18 field using MAX_ROWS and MAX_COLS constants.");
+        }
 
         field = GameObject.Find("Game Field");
         for (int i = 0; i < MAX_ROWS; i++)
@@ -425,7 +496,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //immediate chip destroying, after animation
-    internal void destroyChip(ChipBehaviour chip)
+    internal void DestroyChip(ChipBehaviour chip)
     {
         destroyWaiting--;
 
@@ -434,7 +505,9 @@ public class GameBehaviour : MonoBehaviour
             chipArray[i, chip.col] = chipArray[i + 1, chip.col];
             //can be null for deleted chips
             if (chipArray[i, chip.col])
+            {
                 chipArray[i, chip.col].row = i;
+            }
         }
 
         chipArray[MAX_ROWS - 1, chip.col] = null;
@@ -443,10 +516,10 @@ public class GameBehaviour : MonoBehaviour
         {
             FillNewChips();
             SetPhysics(true);
-            for (int i = 0; i < MAX_ROWS; i++)
+            /*for (int i = 0; i < MAX_ROWS; i++)
                 for (int j = 0; j < MAX_COLS; j++)
                     if (chipArray[i, j] && chipArray[i, j].rigidbody)
-                        previousPositionY[i, j] = chipArray[i, j].rigidbody.transform.position.y;
+                        previousPositionY[i, j] = chipArray[i, j].rigidbody.transform.position.y;*/
             isWaitingChipsFall = true;
         }
     }
@@ -457,9 +530,17 @@ public class GameBehaviour : MonoBehaviour
         {
             int fillerForCol = 0;
             for (int row = 0; row < MAX_ROWS; row++)
+            {
                 if (!chipArray[row, col])
+                {
                     fillerForCol++;
-            if (fillerForCol > 0) FillCol(col, fillerForCol);
+                }
+            }
+
+            if (fillerForCol > 0)
+            {
+                FillCol(col, fillerForCol);
+            }
         }
     }
 
@@ -474,9 +555,14 @@ public class GameBehaviour : MonoBehaviour
 
             int type;
             if (i == 0 && bonusRow[col] > BASE_CHIP_TYPES)
+            {
                 type = bonusRow[col];
+            }
             else
+            {
                 type = random.Next(0, BASE_CHIP_TYPES);
+            }
+
             chipBehaviour.Create(type, MAX_ROWS + i, col, true);
             //set true coords
             chipBehaviour.row = MAX_ROWS - count + i;
@@ -503,9 +589,16 @@ public class GameBehaviour : MonoBehaviour
     {
         Debug.Log("TrySwipe");
         for (int i = 0; i < MAX_ROWS; i++)
+        {
             for (int j = 0; j < MAX_COLS; j++)
+            {
                 if (chipArray[i, j])
+                {
                     chipArray[i, j].halo.enabled = false;
+                }
+            }
+        }
+
         bonusRow = new int[MAX_COLS];
         isFieldActive = false;
         SetPhysics(false);
@@ -528,12 +621,19 @@ public class GameBehaviour : MonoBehaviour
     internal void OnMovingEnd()
     {
         movingCounter++;
-        if (movingCounter < 2) return;
+        if (movingCounter < 2)
+        {
+            return;
+        }
 
         //shuffle end
         if (!selectedChip)
         {
-            if (!FullMatchCheck()) EnablePlayerControl(true);
+            if (!FullMatchCheck())
+            {
+                EnablePlayerControl(true);
+            }
+
             return;
         }
 
@@ -601,28 +701,40 @@ public class GameBehaviour : MonoBehaviour
         if (currentType == SafeGetType(row + 1, col))
         {
             verticalLine.Add(chipArray[row + 1, col]);
-            if (currentType == SafeGetType(row + 2, col)) verticalLine.Add(chipArray[row + 2, col]);
+            if (currentType == SafeGetType(row + 2, col))
+            {
+                verticalLine.Add(chipArray[row + 2, col]);
+            }
         }
 
         //DOWN
         if (currentType == SafeGetType(row - 1, col))
         {
             verticalLine.Add(chipArray[row - 1, col]);
-            if (currentType == SafeGetType(row - 2, col)) verticalLine.Add(chipArray[row - 2, col]);
+            if (currentType == SafeGetType(row - 2, col))
+            {
+                verticalLine.Add(chipArray[row - 2, col]);
+            }
         }
 
         //LEFT
         if (currentType == SafeGetType(row, col - 1))
         {
             horizontalLine.Add(chipArray[row, col - 1]);
-            if (currentType == SafeGetType(row, col - 2)) horizontalLine.Add(chipArray[row, col - 2]);
+            if (currentType == SafeGetType(row, col - 2))
+            {
+                horizontalLine.Add(chipArray[row, col - 2]);
+            }
         }
 
         //RIGHT
         if (currentType == SafeGetType(row, col + 1))
         {
             horizontalLine.Add(chipArray[row, col + 1]);
-            if (currentType == SafeGetType(row, col + 2)) horizontalLine.Add(chipArray[row, col + 2]);
+            if (currentType == SafeGetType(row, col + 2))
+            {
+                horizontalLine.Add(chipArray[row, col + 2]);
+            }
         }
 
         bool isMatch = false;
@@ -658,7 +770,10 @@ public class GameBehaviour : MonoBehaviour
 
     private void AddListOfChipsToDelete(List<ChipBehaviour> addList)
     {
-        foreach (var iterChip in addList) AddToDeleteChips(iterChip);
+        foreach (var iterChip in addList)
+        {
+            AddToDeleteChips(iterChip);
+        }
     }
 
     private void AddToDeleteChips(ChipBehaviour chip)
@@ -703,51 +818,83 @@ public class GameBehaviour : MonoBehaviour
     private void ActivateBonus(ChipBehaviour chip, int pairType)
     {
         //prevent duplicate activations
-        if (chip.isDestroying) return;
+        if (chip.isDestroying)
+        {
+            return;
+        }
+
         chip.StartDestroy();
         if (chip.Type == (int)ChipBehaviour.chipTypes.bomb)
+        {
             for (int i = -1; i < 2; i++)
-            for (int j = -1; j < 2; j++)
-                if (chip.row + i >= 0 && chip.col + j >= 0 && chip.row + i < MAX_ROWS && chip.col + j < MAX_COLS &&
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    if (chip.row + i >= 0 && chip.col + j >= 0 && chip.row + i < MAX_ROWS && chip.col + j < MAX_COLS &&
                     chipArray[chip.row + i, chip.col + j])
                 {
                     if (chipArray[chip.row + i, chip.col + j].Type > BASE_CHIP_TYPES)
-                        ActivateBonus(chipArray[chip.row + i, chip.col + j], pairType);
-                    chipArray[chip.row + i, chip.col + j].StartDestroy();
+                        {
+                            ActivateBonus(chipArray[chip.row + i, chip.col + j], pairType);
+                        }
+
+                        chipArray[chip.row + i, chip.col + j].StartDestroy();
                 }
+                }
+            }
+        }
 
         if (chip.Type == (int)ChipBehaviour.chipTypes.rainbow)
         {
             for (int i = 0; i < MAX_ROWS; i++)
-            for (int j = 0; j < MAX_COLS; j++)
-                if (chipArray[i, j] && chipArray[i, j].Type == pairType)
-                    chipArray[i, j].StartDestroy();
+            {
+                for (int j = 0; j < MAX_COLS; j++)
+                {
+                    if (chipArray[i, j] && chipArray[i, j].Type == pairType)
+                    {
+                        chipArray[i, j].StartDestroy();
+                    }
+                }
+            }
+
             chip.StartDestroy();
         }
 
         if (chip.Type == (int)ChipBehaviour.chipTypes.rocket)
+        {
             for (int i = chip.row; i >= 0; i--)
             {
                 chipArray[i, chip.col].StartDestroy();
                 if (chipArray[i, chip.col].Type > BASE_CHIP_TYPES)
+                {
                     ActivateBonus(chipArray[i, chip.col], pairType);
+                }
+
                 chipArray[i, chip.col].StartDestroy();
             }
+        }
     }
 
     //we don't need Unity physics in shuffle, chips exchange etc...
     private void SetPhysics(bool enabled)
     {
         for (int i = 0; i < MAX_ROWS; i++)
-        for (int j = 0; j < MAX_COLS; j++)
-            if (chipArray[i, j])
+        {
+            for (int j = 0; j < MAX_COLS; j++)
+            {
+                if (chipArray[i, j])
             {
                 var rigidbody = chipArray[i, j].GetComponent<Rigidbody>();
                     rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 rigidbody.detectCollisions = enabled;
                 rigidbody.useGravity = enabled;
-                if (enabled) rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX;
+                if (enabled)
+                    {
+                        rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX;
+                    }
+                }
             }
+        }
     }
 
     //adjacent chips should be not the same at first generation
@@ -755,11 +902,21 @@ public class GameBehaviour : MonoBehaviour
     {
         var excludes = new List<int>();
         if (row > 0)
+        {
             if (chipArray[row - 1, col])
+            {
                 excludes.Add(chipArray[row - 1, col].Type);
+            }
+        }
+
         if (col > 0)
+        {
             if (chipArray[row, col - 1])
+            {
                 excludes.Add(chipArray[row, col - 1].Type);
+            }
+        }
+
         return GetRandomWithExcludes(BASE_CHIP_TYPES, excludes);
     }
 
@@ -767,19 +924,26 @@ public class GameBehaviour : MonoBehaviour
     private int GetRandomWithExcludes(int maxNumber, List<int> excludes)
     {
         if (excludes.Count >= maxNumber)
+        {
             throw new Exception("GetRandomWithExcludes can't be done with so much excludes!");
+        }
 
         int answer = random.Next(0, maxNumber);
         for (int i = 0; i < excludes.Count; i++)
+        {
             if (excludes.Contains(answer))
             {
                 answer++;
-                if (answer >= maxNumber) answer = 0;
+                if (answer >= maxNumber)
+                {
+                    answer = 0;
+                }
             }
             else
             {
                 return answer;
             }
+        }
 
         return answer;
     }
@@ -789,10 +953,15 @@ public class GameBehaviour : MonoBehaviour
     {
         var noMatchVector = new Vector2(-1, -1);
         for (int i = 0; i < MAX_ROWS; i++)
-        for (int j = 0; j < MAX_COLS; j++)
+        {
+            for (int j = 0; j < MAX_COLS; j++)
         {
             var answerVector = GetPossibleMovesForChip(i, j);
-            if (answerVector != noMatchVector) return new Vector4(i, j, answerVector.x, answerVector.y);
+            if (answerVector != noMatchVector)
+                {
+                    return new Vector4(i, j, answerVector.x, answerVector.y);
+                }
+            }
         }
 
         return new Vector4(-1, -1, -1, -1);
@@ -802,23 +971,39 @@ public class GameBehaviour : MonoBehaviour
     {
         //try move up
         if (row + 1 < MAX_ROWS)
+        {
             if (VirtualMoveCheck(row + 1, col, row, col))
+            {
                 return new Vector2(row + 1, col);
+            }
+        }
 
         //try move right
         if (col + 1 < MAX_COLS)
+        {
             if (VirtualMoveCheck(row, col + 1, row, col))
+            {
                 return new Vector2(row, col + 1);
+            }
+        }
 
         //try move down
         if (row > 0)
+        {
             if (VirtualMoveCheck(row - 1, col, row, col))
+            {
                 return new Vector2(row - 1, col);
+            }
+        }
 
         //try move left
         if (col > 0)
+        {
             if (VirtualMoveCheck(row, col - 1, row, col))
+            {
                 return new Vector2(row, col - 1);
+            }
+        }
 
         return new Vector2(-1, -1);
     }
@@ -891,8 +1076,16 @@ public class GameBehaviour : MonoBehaviour
     //return type of chip is available, -1 if not
     private int SafeGetType(int row, int col)
     {
-        if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLS) return -1;
-        if (chipArray[row, col]) return chipArray[row, col].Type;
+        if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLS)
+        {
+            return -1;
+        }
+
+        if (chipArray[row, col])
+        {
+            return chipArray[row, col].Type;
+        }
+
         return -1;
     }
 
@@ -1092,45 +1285,63 @@ public class GameBehaviour : MonoBehaviour
                 break;
             case 24:
                 for (int i = 0; i < 3; i++)
+                {
                     for (int j = 0; j < 3; j++)
                     {
                         chipArray[i, j].Type = 4;
                     }
+                }
+
                 break;
             case 25:
                 for (int i = 0; i < 4; i++)
+                {
                     for (int j = 0; j < 4; j++)
                     {
                         chipArray[i, j].Type = 4;
                     }
+                }
+
                 break;
             case 26:
                 for (int i = 0; i < 5; i++)
+                {
                     for (int j = 0; j < 5; j++)
                     {
                         chipArray[i, j].Type = 4;
                     }
+                }
+
                 break;
             case 27:
                 for (int i = 0; i < 6; i++)
+                {
                     for (int j = 0; j < 6; j++)
                     {
                         chipArray[i, j].Type = 4;
                     }
+                }
+
                 break;
             case 28:
                 for (int i = 0; i < 7; i++)
+                {
                     for (int j = 0; j < 7; j++)
                     {
                         chipArray[i, j].Type = 4;
                     }
+                }
+
                 break;
             case 29:
                 for (int i = 0; i < 8; i++)
+                {
                     for (int j = 0; j < 8; j++)
                     {
                         chipArray[i, j].Type = 4;
                     }
+                }
+
                 break;
 
             default:
