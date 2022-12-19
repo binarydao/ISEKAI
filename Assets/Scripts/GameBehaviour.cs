@@ -474,7 +474,7 @@ public class GameBehaviour : MonoBehaviour
             bool useGravity = i != 0;
             for (int j = 0; j < MAX_COLS; j++)
             {
-                var chip = (GameObject)Instantiate(Resources.Load("ChipPrefab"));
+                var chip = (GameObject)Instantiate(Resources.Load("chips/ChipPrefab"));
                 chip.transform.parent = field.transform;
                 var chipBehaviour = chip.GetComponent<ChipBehaviour>();
                 chipArray[i, j] = chipBehaviour;

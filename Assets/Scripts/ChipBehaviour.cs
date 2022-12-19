@@ -108,7 +108,7 @@ public class ChipBehaviour : MonoBehaviour
     private void ChangeType(int type)
     {
         this.type = type;
-        var texture = (Texture2D) Resources.Load("chip" + type);
+        var texture = (Texture2D) Resources.Load("Chips/chip" + type);
         var runtimeSprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height),
             new Vector2(0.5f, 0.5f), 100.0f);
         gameObject.GetComponent<SpriteRenderer>().sprite = runtimeSprite;

@@ -114,6 +114,8 @@
     <Compile Include="Assets\Scripts\PauseButtonBehaviour.cs" />
     <Compile Include="Assets\Scripts\PreferenceSave.cs" />
     <Compile Include="Assets\Scripts\ProgressBarClass.cs" />
+    <Compile Include="Assets\Scripts\QuestLogic.cs" />
+    <Compile Include="Assets\Scripts\QuestPrerequisite.cs" />
     <Compile Include="Assets\Scripts\SaveFile.cs" />
     <Compile Include="Assets\Scripts\SaveLoadFile.cs" />
     <Compile Include="Assets\Scripts\SettingsManager.cs" />
