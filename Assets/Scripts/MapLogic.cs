@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class MapLogic : MonoBehaviour
     private static GameObject HeroIcon;
 
     // Movement speed in units per second.
-    private static float speed = 1.0F;
+    private static float speed = 5.0F;
     // Time when the movement started.
     private static float startTime;
     // Total distance between the markers.
@@ -17,6 +18,8 @@ public class MapLogic : MonoBehaviour
     private static Vector3 EndPoint;
 
     private static bool IsMoving = false;
+
+    private static int CurrentLocationId = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -46,12 +49,19 @@ public class MapLogic : MonoBehaviour
         }
     }
 
-    public static void StartMoveHero(Vector3 finishPoint)
+    public static void TryMove(Vector3 finishPoint, int DestinationId)
     {
         if(IsMoving)
         {
             return;
         }
+
+        if(!IsPassable(DestinationId))
+        {
+            return;
+        }
+
+        CurrentLocationId = DestinationId;
 
         startTime = Time.time;
         StartPoint = HeroIcon.transform.position;
@@ -64,5 +74,10 @@ public class MapLogic : MonoBehaviour
         journeyLength = Vector3.Distance(StartPoint, EndPoint);
         
         IsMoving = true;
+    }
+
+    private static bool IsPassable(int DestinationId)
+    {
+        return (Array.IndexOf(MapStructure.Ways[DestinationId], CurrentLocationId) > -1);
     }
 }

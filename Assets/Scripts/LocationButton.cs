@@ -22,10 +22,14 @@ public class LocationButton : MonoBehaviour
 
     void OnMouseUp()
     {
-        
-        
-     
-        MapLogic.StartMoveHero(transform.position);
+
+        Debug.Log(name);
+
+        int DestinationId;
+        DestinationId = int.Parse(name.Substring(3));
+        Debug.Log("id: " + DestinationId);
+
+        MapLogic.TryMove(transform.position, DestinationId);
     }
 
     void OnMouseEnter()

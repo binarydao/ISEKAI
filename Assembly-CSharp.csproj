@@ -110,6 +110,7 @@
     <Compile Include="Assets\Scripts\LocationButton.cs" />
     <Compile Include="Assets\Scripts\MainVideoClick.cs" />
     <Compile Include="Assets\Scripts\MapLogic.cs" />
+    <Compile Include="Assets\Scripts\MapStructure.cs" />
     <Compile Include="Assets\Scripts\ModePage.cs" />
     <Compile Include="Assets\Scripts\MuteButtonBehaviour.cs" />
     <Compile Include="Assets\Scripts\Parralax.cs" />
