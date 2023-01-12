@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\Buttons\TestButton.cs" />
     <Compile Include="Assets\Scripts\ChipBehaviour.cs" />
     <Compile Include="Assets\Scripts\DLCPage.cs" />
+    <Compile Include="Assets\Scripts\EnemiesStructure.cs" />
     <Compile Include="Assets\Scripts\GalleryController.cs" />
     <Compile Include="Assets\Scripts\GalleryPage.cs" />
     <Compile Include="Assets\Scripts\GameBehaviour.cs" />

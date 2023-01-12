@@ -21,9 +21,16 @@ public class ButtonsBehaviour : MonoBehaviour {
         SceneManager.LoadScene("BaseScene", LoadSceneMode.Single);
     }
 
-    public void MapClick()
+    public void LoseClick()
     {
-        SceneManager.LoadScene("MapScene", LoadSceneMode.Single);
+        SceneManager.UnloadSceneAsync("M3Scene");
+        MapLogic.Holder.SetActive(true);
+    }
+
+    public void WinClick()
+    {
+        SceneManager.UnloadSceneAsync("M3Scene");
+        MapLogic.Holder.SetActive(true);
     }
 
     public void M3Click()
@@ -34,11 +41,6 @@ public class ButtonsBehaviour : MonoBehaviour {
     public void QuestsClick()
     {
         SceneManager.LoadScene("QuestsScene", LoadSceneMode.Single);
-    }
-
-    public void ArenaClick()
-    {
-        SceneManager.LoadScene("ArenaScene", LoadSceneMode.Single);
     }
 
     public void BarracksClick()

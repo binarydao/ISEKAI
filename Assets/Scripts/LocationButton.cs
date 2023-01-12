@@ -10,7 +10,6 @@ public class LocationButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("LocationButton Start");
         cursor = (Texture2D)Resources.Load("hand");
     }
 
@@ -27,7 +26,6 @@ public class LocationButton : MonoBehaviour
 
         int DestinationId;
         DestinationId = int.Parse(name.Substring(3));
-        Debug.Log("id: " + DestinationId);
 
         MapLogic.TryMove(transform.position, DestinationId);
     }
