@@ -96,8 +96,6 @@ public class GameBehaviour : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        Debug.Log("It's Adventure Time!");
-
         instance = this;
 
         random = new Random();
@@ -115,6 +113,10 @@ public class GameBehaviour : MonoBehaviour
 
         isShowRules = true;
         isHintShowed = true;
+
+        GameObject enemyIcon = GameObject.Find("EnemyPortrait");
+        SpriteRenderer enemySprite = enemyIcon.GetComponent<SpriteRenderer>();
+        enemySprite.sprite = Resources.Load<Sprite>("Enemies/Enemy" + MapLogic.enemyId);
     }
 
     //make/unmake field active
@@ -179,7 +181,6 @@ public class GameBehaviour : MonoBehaviour
     private void ShowHint()
     {
         isHintShowed = true;
-        Debug.Log("Show hint");
         var hintCoords = GetAnyPossibleMove();
         chipArray[(int)hintCoords.x, (int)hintCoords.y].halo.enabled = true;
         chipArray[(int)hintCoords.z, (int)hintCoords.w].halo.enabled = true;
@@ -191,7 +192,6 @@ public class GameBehaviour : MonoBehaviour
         selectedChip = null;
         SetPhysics(false);
 
-        Debug.Log("Shuffle");
         var sameChips = GetAnySameChips(0);
         var excludes = new List<int>();
 
@@ -342,7 +342,6 @@ public class GameBehaviour : MonoBehaviour
         {
             for (int i = 0; i < MAX_ROWS; i++)
             {
-                //Debug.Log("currentType[" + i +  ", " + j + "]: " + chipArray[i, j].Type);
                 //new line
                 if (i == 0 || currentType < 0 || currentType != chipArray[i, j].Type)
                 {
@@ -374,8 +373,7 @@ public class GameBehaviour : MonoBehaviour
                 isNewCombinations = SquareCheck(chipArray[i,j]) || isNewCombinations;
             }
         }
-
-        Debug.Log("isNewCombinations: " + isNewCombinations);
+        
         if (isNewCombinations)
         {
             CollectMatches();
@@ -387,7 +385,6 @@ public class GameBehaviour : MonoBehaviour
 
     private void CollectMatches()
     {
-        Debug.Log("here is new matches!");
         foreach (var iterChip in DeleteChipsList)
         {
             iterChip.StartDestroy();
@@ -485,12 +482,11 @@ public class GameBehaviour : MonoBehaviour
 
         if (GetAnyPossibleMove() != noMatchVector4)
         {
-            Debug.Log("There ARE possible moves.");
+            //There ARE possible moves."
         }
         else
         {
             //ok, there is no turns at start, so we generate a one turn as an exception
-            Debug.Log("There are NO possible moves. Generating patch.");
             GeneratePatchForField();
         }
     }
@@ -587,7 +583,6 @@ public class GameBehaviour : MonoBehaviour
 
     internal void TrySwipeWith(ChipBehaviour secondChip)
     {
-        Debug.Log("TrySwipe");
         for (int i = 0; i < MAX_ROWS; i++)
         {
             for (int j = 0; j < MAX_COLS; j++)
@@ -690,9 +685,7 @@ public class GameBehaviour : MonoBehaviour
 
         int row = chip.row;
         int col = chip.col;
-
-        Debug.Log("row:" + row + "; col:" + col);
-
+        
         int currentType = SafeGetType(chip.row, chip.col);
 
         SquareCheck(chip);
@@ -741,7 +734,6 @@ public class GameBehaviour : MonoBehaviour
 
         if (horizontalLine.Count >= 3)
         {
-            Debug.Log("It's horizontalLine line in (" + row + ";" + col + ")");
             //if (horizontalLine.Count >= 4) bonusRow[col] = (int)ChipBehaviour.chipTypes.bomb;
             AddListOfChipsToDelete(horizontalLine);
             isMatch = true;
@@ -749,7 +741,6 @@ public class GameBehaviour : MonoBehaviour
 
         if (verticalLine.Count >= 3)
         {
-            Debug.Log("It's vertical line in (" + row + ";" + col + ")");
             //if (verticalLine.Count >= 4) bonusRow[col] = (int)ChipBehaviour.chipTypes.rocket;
             AddListOfChipsToDelete(verticalLine);
             isMatch = true;
@@ -1018,7 +1009,6 @@ public class GameBehaviour : MonoBehaviour
             if (SafeGetType(initRow, initCol) == SafeGetType(newRow, newCol - 1) &&
                 SafeGetType(initRow, initCol) == SafeGetType(newRow, newCol + 1))
             {
-                Debug.Log("Possible (" + initRow + ";" + initCol + ") to (" + newRow + ";" + newCol + ") for CENTRAL HORIZONTAL move");
                 return true;
             }
 
@@ -1026,7 +1016,6 @@ public class GameBehaviour : MonoBehaviour
             if (SafeGetType(initRow, initCol) == SafeGetType(newRow, newCol - 1) &&
                 SafeGetType(initRow, initCol) == SafeGetType(newRow, newCol - 2))
             {
-                Debug.Log("Possible move (" + initRow + ";" + initCol + ") to (" + newRow + ";" + newCol + ") for LEFT HORIZONTAL move");
                 return true;
             }
 
@@ -1034,7 +1023,6 @@ public class GameBehaviour : MonoBehaviour
             if (SafeGetType(initRow, initCol) == SafeGetType(newRow, newCol + 1) &&
                 SafeGetType(initRow, initCol) == SafeGetType(newRow, newCol + 2))
             {
-                Debug.Log("Possible move (" + initRow + ";" + initCol + ") to (" + newRow + ";" + newCol + ") for RIGHT HORIZONTAL move");
                 return true;
             }
         }
@@ -1046,8 +1034,6 @@ public class GameBehaviour : MonoBehaviour
             if (SafeGetType(initRow, initCol) == SafeGetType(newRow - 1, newCol) &&
                 SafeGetType(initRow, initCol) == SafeGetType(newRow + 1, newCol))
             {
-                Debug.Log("Move (" + initRow + ";" + initCol + ") to (" + newRow + ";" + newCol +
-                          ") for CENTRAL VERTICAL move");
                 return true;
             }
 
@@ -1055,8 +1041,6 @@ public class GameBehaviour : MonoBehaviour
             if (SafeGetType(initRow, initCol) == SafeGetType(newRow + 1, newCol) &&
                 SafeGetType(initRow, initCol) == SafeGetType(newRow + 2, newCol))
             {
-                Debug.Log("Move (" + initRow + ";" + initCol + ") to (" + newRow + ";" + newCol +
-                          ") for UP VERTICAL move");
                 return true;
             }
 
@@ -1064,8 +1048,6 @@ public class GameBehaviour : MonoBehaviour
             if (SafeGetType(initRow, initCol) == SafeGetType(newRow - 1, newCol) &&
                 SafeGetType(initRow, initCol) == SafeGetType(newRow - 2, newCol))
             {
-                Debug.Log("Move (" + initRow + ";" + initCol + ") to (" + newRow + ";" + newCol +
-                          ") for DOWN VERTICAL move");
                 return true;
             }
         }
@@ -1094,7 +1076,6 @@ public class GameBehaviour : MonoBehaviour
         var textFieldObject = GameObject.Find("Score Text");
         var textField = textFieldObject.GetComponent<Text>();
         textField.text = "Score: " + ScorePoints + "     Turns left: " + TurnsLeft;
-        Debug.Log("UpdateScore finished");
     }
 
     private void EnablePlayerControl(bool skipCheck)
@@ -1116,8 +1097,6 @@ public class GameBehaviour : MonoBehaviour
 
     internal void TestMatch()
     {
-        Debug.Log("TestMatch test case: " + testCase);
-                
 
         switch(testCase)
         {

@@ -25,12 +25,14 @@ public class ButtonsBehaviour : MonoBehaviour {
     {
         SceneManager.UnloadSceneAsync("M3Scene");
         MapLogic.Holder.SetActive(true);
+        MapLogic.ReturnHalfwayMove();
     }
 
     public void WinClick()
     {
         SceneManager.UnloadSceneAsync("M3Scene");
         MapLogic.Holder.SetActive(true);
+        MapLogic.WinAndFinishHalfwayMove();
     }
 
     public void M3Click()

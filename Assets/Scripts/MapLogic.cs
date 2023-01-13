@@ -21,11 +21,27 @@ public class MapLogic : MonoBehaviour
     private static bool IsMoving = false;
 
     private static bool IsWayEnemyPassed;
-
+    
     private static int CurrentLocationId = 1;
     private static int DestinationId = 1;
 
-    private static Vector3 HalfwayHeroPosition;
+    public static int enemyId = 1;
+
+    internal static void WinAndFinishHalfwayMove()
+    {
+        DestroyEnemy();
+        Debug.Log("WinAndFinishHalfwayMove");
+        TryMove(DestinationId, false);
+        IsWayEnemyPassed = true;
+    }
+
+    internal static void ReturnHalfwayMove()
+    {
+        Debug.Log("ReturnHalfwayMove");
+        TryMove(CurrentLocationId, true);
+        IsWayEnemyPassed = true;
+    }
+
     private static bool IsHalfwayPosition = false;
 
     public static GameObject Holder;
@@ -64,53 +80,84 @@ public class MapLogic : MonoBehaviour
         }
     }
 
-    private void CheckWayEnemy()
+    private static void DestroyEnemy()
+    {
+        string nameString = "Enemy" + enemyId;
+        Debug.Log(nameString);
+        GameObject enemyIcon = GameObject.Find(nameString);
+        Debug.Log(enemyIcon);
+        enemyIcon.SetActive(false);
+        Destroy(enemyIcon);
+
+        for(int i =0; i<EnemiesStructure.LocationEnemies.Length; i++)
+        {
+            if (EnemiesStructure.LocationEnemies[i] == enemyId)
+            {
+                EnemiesStructure.LocationEnemies[i] = 0;
+            }
+        }
+
+
+        for (int i = 0; i < EnemiesStructure.WaysEnemies.Length; i++)
+        {
+            for (int j = 0; j < EnemiesStructure.WaysEnemies[i].Length; j++)
+            {
+                if (EnemiesStructure.WaysEnemies[i][j] == enemyId)
+                {
+                    EnemiesStructure.WaysEnemies[i][j] = 0;
+                }
+            }
+        }
+
+            //проход и удаление в межлокациях
+        }
+
+        private void CheckWayEnemy()
     {
         IsWayEnemyPassed = true;
-        int enemyId = EnemiesStructure.WaysEnemies[CurrentLocationId][DestinationId];
+        enemyId = EnemiesStructure.WaysEnemies[CurrentLocationId][DestinationId];
         if (enemyId > 0)
         {
-            Debug.Log("Monster here: " + enemyId);
 
             IsHalfwayPosition = true;
-            HalfwayHeroPosition = HeroIcon.transform.position;
+            IsMoving = false;
 
             Holder.SetActive(false);
 
-            SceneManager.LoadScene("M3Scene", LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync("M3Scene", LoadSceneMode.Additive);
         }
         else
         {   
-            Debug.Log("No enemy here");
         }
     }
 
     private void CheckLocationEnemy()
     {
-        int enemyId = EnemiesStructure.LocationEnemies[DestinationId];
+        enemyId = EnemiesStructure.LocationEnemies[DestinationId];
         if(enemyId>0)
         {
-            Debug.Log("Monster here: " + enemyId);
-            
             Holder.SetActive(false);
 
             SceneManager.LoadScene("M3Scene", LoadSceneMode.Additive);
         }
         else
         {
-            Debug.Log("No enemy here");
         }
         CurrentLocationId = DestinationId;
     }
 
-    public static void TryMove(Vector3 finishPoint, int targetId)
+    public static void TryMove(int targetId, bool MovingBack)
     {
-        if(IsMoving)
+        GameObject locationPoint = GameObject.Find("Loc" + targetId);
+        Vector3 finishPoint = locationPoint.transform.position;
+        
+
+        if (IsMoving)
         {
             return;
         }
 
-        if(!IsPassable(targetId))
+        if(!MovingBack && !IsPassable(targetId))
         {
             return;
         }
@@ -120,6 +167,8 @@ public class MapLogic : MonoBehaviour
         startTime = Time.time;
         StartPoint = HeroIcon.transform.position;
         EndPoint = finishPoint;
+        Debug.Log("StartPoint: " + StartPoint);
+        Debug.Log("EndPoint: " + EndPoint);
 
         EndPoint.z = StartPoint.z;
         journeyLength = Vector3.Distance(StartPoint, EndPoint);

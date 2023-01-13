@@ -2813,7 +2813,7 @@ PrefabInstance:
     - target: {fileID: 7366678076104351365, guid: fe0bdae73453bcd4c8d13bc671c0b8ac,
         type: 3}
       propertyPath: m_Name
-      value: Enemy7
+      value: Enemy1
       objectReference: {fileID: 0}
     - target: {fileID: 984254406564194007, guid: fe0bdae73453bcd4c8d13bc671c0b8ac,
         type: 3}
@@ -2884,7 +2884,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f3a41feadf9ad8f4494fb600d174d371,
+      objectReference: {fileID: 21300000, guid: 09bcd7eae54f8d447b1da2b3a1b5a328,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe0bdae73453bcd4c8d13bc671c0b8ac, type: 3}
