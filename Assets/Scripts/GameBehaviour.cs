@@ -138,8 +138,22 @@ public class GameBehaviour : MonoBehaviour
                 for (int j = 0; j < MAX_COLS; j++)
                 {
                     //rigidbody.velocity not works there well; WARNING: can be destroyed between updates
-                    if (chipArray[i, j])
+                    if (chipArray[i, j] && chipArray[i, j].rigidbody)
                     {
+                        
+                        if (chipArray[i, j].rigidbody.velocity.magnitude > 3)
+                        {
+                            isWaitingChipsFall = true;
+                        }
+
+                        if (chipArray[i, j].rigidbody.position.y > maxY)
+                        {
+                            chipArray[i, j].rigidbody.MovePosition(new Vector3(chipArray[i, j].rigidbody.position.x, maxY, 0));
+                        }
+                        if (chipArray[i, j].rigidbody.velocity.y > 0)
+                        {
+                            chipArray[i, j].rigidbody.velocity = new Vector3(0, 0, 0);
+                        }
 
                     }
                         
@@ -530,7 +544,7 @@ public class GameBehaviour : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            var chip = (GameObject)Instantiate(Resources.Load("Chips/ChipPrefab"));
+            var chip = (GameObject)Instantiate(Resources.Load("ChipPrefab"));
             chip.transform.parent = field.transform;
             var chipBehaviour = chip.GetComponent<ChipBehaviour>();
             chipArray[MAX_ROWS - count + i, col] = chipBehaviour;
@@ -549,7 +563,7 @@ public class GameBehaviour : MonoBehaviour
             //set true coords
             chipBehaviour.row = MAX_ROWS - count + i;
             chip.transform.position = new Vector2(chip.transform.position.x - fieldHalfWidth,
-                - fieldHalfHeight+(MAX_COLS + i)*ChipBehaviour.ICON_HEIGHT);
+                chip.transform.position.y - fieldHalfHeight);
         }
     }
 
@@ -860,8 +874,15 @@ public class GameBehaviour : MonoBehaviour
             for (int j = 0; j < MAX_COLS; j++)
             {
                 if (chipArray[i, j])
-                {
-
+            {
+                var rigidbody = chipArray[i, j].GetComponent<Rigidbody>();
+                    rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                rigidbody.detectCollisions = enabled;
+                rigidbody.useGravity = enabled;
+                if (enabled)
+                    {
+                        rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX;
+                    }
                 }
             }
         }

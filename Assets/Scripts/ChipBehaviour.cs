@@ -26,6 +26,8 @@ public class ChipBehaviour : MonoBehaviour
     internal bool isDestroying;
     private bool isMoving;
 
+    internal Rigidbody rigidbody;
+
     internal int row;
     private SpriteRenderer spriteRenderer;
     private Vector2 startPosition;
@@ -79,6 +81,12 @@ public class ChipBehaviour : MonoBehaviour
                 transform.position = Vector2.Lerp(startPosition, endPosition, part);
             }
         }
+
+        if (isCreated && transform.position.y < -GameBehaviour.instance.fieldHalfHeight)
+        {
+            rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            transform.position = new Vector2(transform.position.x, -GameBehaviour.instance.fieldHalfHeight);
+        }
     }
 
     //uses to generate and place chip
@@ -89,6 +97,10 @@ public class ChipBehaviour : MonoBehaviour
         ChangeType(type);
         transform.position = new Vector2(col * ICON_WIDTH, row * ICON_HEIGHT);
 
+        rigidbody = gameObject.GetComponent<Rigidbody>();
+
+        if (!useGravity)
+            rigidbody.constraints = RigidbodyConstraints.FreezeAll;
         isCreated = true;
     }
 
@@ -98,7 +110,7 @@ public class ChipBehaviour : MonoBehaviour
         this.type = type;
         var texture = (Texture2D) Resources.Load("Chips/chip" + type);
         var runtimeSprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height),
-            new Vector2(ICON_WIDTH, ICON_HEIGHT), 100.0f);
+            new Vector2(0.5f, 0.5f), 100.0f);
         gameObject.GetComponent<SpriteRenderer>().sprite = runtimeSprite;
         
     }
