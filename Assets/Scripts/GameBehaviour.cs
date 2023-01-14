@@ -138,9 +138,10 @@ public class GameBehaviour : MonoBehaviour
                 for (int j = 0; j < MAX_COLS; j++)
                 {
                     //rigidbody.velocity not works there well; WARNING: can be destroyed between updates
-                    if (chipArray[i, j])
+                    if (chipArray[i, j].transform.position.y > -1.8 + chipArray[i, j].row*ChipBehaviour.ICON_HEIGHT)
                     {
-
+                        chipArray[i, j].transform.position = new Vector3(chipArray[i, j].transform.position.x, chipArray[i, j].transform.position.y - 0.1f, chipArray[i, j].transform.position.z);
+                        isWaitingChipsFall = true;
                     }
                         
                 }
@@ -284,6 +285,7 @@ public class GameBehaviour : MonoBehaviour
     //check and collect chips
     private bool FullMatchCheck()
     {
+
         bool isNewCombinations = false;
         var line = new List<ChipBehaviour>();
         DeleteChipsList = new List<ChipBehaviour>();
