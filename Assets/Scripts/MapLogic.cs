@@ -142,8 +142,9 @@ public class MapLogic : MonoBehaviour
         }
         else
         {
+            CurrentLocationId = DestinationId;
         }
-        CurrentLocationId = DestinationId;
+        
     }
 
     public static void TryMove(int targetId, bool MovingBack)
