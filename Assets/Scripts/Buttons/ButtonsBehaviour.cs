@@ -23,16 +23,14 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void LoseClick()
     {
-        SceneManager.UnloadSceneAsync("M3Scene");
-        MapLogic.Holder.SetActive(true);
-        MapLogic.ReturnHalfwayMove();
+        GameBehaviour.Win();
+
     }
 
     public void WinClick()
     {
-        SceneManager.UnloadSceneAsync("M3Scene");
-        MapLogic.Holder.SetActive(true);
-        MapLogic.WinAndFinishHalfwayMove();
+        GameBehaviour.Lose();
+       
     }
 
     public void M3Click()
@@ -68,5 +66,15 @@ public class ButtonsBehaviour : MonoBehaviour {
     public void ArenaShopClick()
     {
         SceneManager.LoadScene("ArenaShopScene", LoadSceneMode.Single);
+    }
+
+    public void DamageHero()
+    {
+        GameBehaviour.DamageHero(5);
+    }
+
+    public void DamageEnemy()
+    {
+        GameBehaviour.DamageEnemy(5);
     }
 }

@@ -124,45 +124,43 @@ public class ChipBehaviour : MonoBehaviour
 
     private void OnMouseUp()
     {
-        Debug.Log("OnMouseUp");
         //some animation or moving in process, skip click
-        if (!GameBehaviour.instance.isFieldActive) return;
+        if (!GameBehaviour.isFieldActive) return;
         if (startSwipeChip != lastMouseEnterSprite)
         {
-            Debug.Log("OnMouseUp");
-            GameBehaviour.instance.selectedChip = startSwipeChip;
+            GameBehaviour.selectedChip = startSwipeChip;
             if (IsChipsAdjacent(startSwipeChip, lastMouseEnterSprite))
                 GameBehaviour.instance.TrySwipeWith(lastMouseEnterSprite);
             return;
         }
 
         //uncheck chip
-        if (GameBehaviour.instance.selectedChip == this)
+        if (GameBehaviour.selectedChip == this)
         {
             startSwipeChip = null;
             halo.enabled = false;
-            GameBehaviour.instance.selectedChip = null;
+            GameBehaviour.selectedChip = null;
         }
         //no previous checks
-        else if (!GameBehaviour.instance.selectedChip)
+        else if (!GameBehaviour.selectedChip)
         {
             halo.enabled = true;
-            GameBehaviour.instance.selectedChip = this;
+            GameBehaviour.selectedChip = this;
             Debug.Log("Selected chip row:" + row + "; col: " + col);
         }
         //try to change places?
-        else if (IsChipsAdjacent(GameBehaviour.instance.selectedChip, this))
+        else if (IsChipsAdjacent(GameBehaviour.selectedChip, this))
         {
             halo.enabled = false;
-            GameBehaviour.instance.selectedChip.halo.enabled = false;
+            GameBehaviour.selectedChip.halo.enabled = false;
             GameBehaviour.instance.TrySwipeWith(this);
         }
         //not adjacent, lets check another chip
         else
         {
-            GameBehaviour.instance.selectedChip.halo.enabled = false;
+            GameBehaviour.selectedChip.halo.enabled = false;
             halo.enabled = true;
-            GameBehaviour.instance.selectedChip = this;
+            GameBehaviour.selectedChip = this;
             Debug.Log("Selected chip row:" + row + "; col: " + col);
         }
     }
@@ -184,7 +182,7 @@ public class ChipBehaviour : MonoBehaviour
         }
             
 
-        GameBehaviour.instance.isFieldActive = false;
+        GameBehaviour.isFieldActive = false;
 
         GameBehaviour.instance.destroyWaiting++;
 

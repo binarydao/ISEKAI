@@ -8,10 +8,7 @@ using Random = System.Random;
 
 public class GameBehaviour : MonoBehaviour
 {
-    internal const int SCORES_FOR_CHIP = 100;
-    private const int BASE_CHIP_TYPES = 6;
-    private const int TURNS_FOR_GAME = 200;
-    private const int SCORES_TO_WIN = 400000;
+    private const int BASE_CHIP_TYPES = 4;
     private const int TIME_BEFORE_HINT = 1000000;
 
     //min 4, max 9
@@ -22,10 +19,10 @@ public class GameBehaviour : MonoBehaviour
 
     internal static GameBehaviour instance;
 
-    private readonly ChipBehaviour[,] chipArray = new ChipBehaviour[MAX_ROWS, MAX_COLS];
+    private static ChipBehaviour[,] chipArray = new ChipBehaviour[MAX_ROWS, MAX_COLS];
 
-    private readonly Vector4 noMatchVector4 = new Vector4(-1, -1, -1, -1);
 
+    private static Vector4 noMatchVector4 = new Vector4(-1, -1, -1, -1);
 
 
     //private readonly float[,] previousPositionY = new float[MAX_ROWS, MAX_COLS];
@@ -40,8 +37,8 @@ public class GameBehaviour : MonoBehaviour
     internal float fieldHalfHeight;
 
     internal float fieldHalfWidth;
-    internal bool isFieldActive;
-    private bool isHintShowed;
+    public static bool isFieldActive;
+    private static bool isHintShowed;
     private bool isLose;
 
     private bool isMovingBack;
@@ -58,17 +55,25 @@ public class GameBehaviour : MonoBehaviour
     private int movingCounter;
     private GameObject pauseButton;
 
-    private Random random;
+    private static Random random;
 
     private int scorePoints;
+
     private ChipBehaviour secondChip;
 
-    internal ChipBehaviour selectedChip;
+    public static ChipBehaviour selectedChip;
 
-    private float startTurnTime;
+    private static float startTurnTime;
     private int turnsLeft;
 
     private List<ChipBehaviour> DeleteChipsList;
+
+    private static int HeroHP = 20;
+    private static int HeroMaxHP = 20;
+    private static int EnemyHP = 20;
+    private static int EnemyMaxHP = 20;
+
+    private static bool Was4Plus = false;
 
 
     internal int ScorePoints
@@ -104,8 +109,6 @@ public class GameBehaviour : MonoBehaviour
 
         audioSource = gameObject.AddComponent<AudioSource>();
         matchSound = (AudioClip)Resources.Load("Sounds/matchSound");
-
-        TurnsLeft = TURNS_FOR_GAME;
 
         pauseButton = GameObject.Find("Pause Button");
         pauseButton.SetActive(false);
@@ -147,8 +150,13 @@ public class GameBehaviour : MonoBehaviour
                 }
             }
 
-            if (!isWaitingChipsFall )
+            if (!isWaitingChipsFall)
             {
+                if (!Was4Plus)
+                {
+                    EnemyAttack();
+                }
+                Was4Plus = false;
                 if (!FullMatchCheck())
                 {
                     CheckWinLose();
@@ -174,7 +182,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //three predefined points for chips, other place at random
-    private void Shuffle()
+    private static void Shuffle()
     {
         selectedChip = null;
         SetPhysics(false);
@@ -226,24 +234,24 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //2D to linear: row*MAX_ROWS+col
-    private int GetLinearIndex(int row, int col)
+    private static int GetLinearIndex(int row, int col)
     {
         return row * MAX_ROWS + col;
     }
 
     //linear to 2D: row = index / MAX_ROWS; col = index % MAX_ROWS
-    private int GetRowOfLinear(int index)
+    private static int GetRowOfLinear(int index)
     {
         return index / MAX_ROWS;
     }
 
-    private int GetColOfLinear(int index)
+    private static int GetColOfLinear(int index)
     {
         return index % MAX_ROWS;
     }
 
     //looking for 3 same chips recursively
-    private List<ChipBehaviour> GetAnySameChips(int currentType)
+    private static List<ChipBehaviour> GetAnySameChips(int currentType)
     {
         var sameChips = new List<ChipBehaviour>();
         for (int i = 0; i < MAX_ROWS; i++)
@@ -266,17 +274,15 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //are we done yet?
-    private void CheckWinLose()
+    private static void CheckWinLose()
     {
-        if (scorePoints >= SCORES_TO_WIN)
+        if(HeroHP <=0 )
         {
-            isWin = true;
-        }
-        else if (turnsLeft <= 0)
+            Lose();
+        } else if (EnemyHP <=0)
         {
-            isLose = true;
-        }
-        else
+            Win();
+        } else
         {
             EnablePlayerControl(false);
         }
@@ -305,10 +311,14 @@ public class GameBehaviour : MonoBehaviour
                 //new line
                 if (j == 0 || currentType < 0 || currentType != chipArray[i, j].Type)
                 {
+                    if (line.Count > 3)
+                    {
+                        Debug.Log("Was4Plus 1");
+                        Was4Plus = true;
+                    }
+                        
                     if (line.Count >= 3)
                     {
-                        /*foreach (var iterChip in line) horizontalLine.Add(iterChip);
-                        if (line.Count >= 4) bonusRow[j] = (int)ChipBehaviour.chipTypes.bomb;*/
                         isNewCombinations = true;
                         AddListOfChipsToDelete(line);
                     }
@@ -333,12 +343,14 @@ public class GameBehaviour : MonoBehaviour
                 //new line
                 if (i == 0 || currentType < 0 || currentType != chipArray[i, j].Type)
                 {
+                    if (line.Count > 3)
+                    {
+                        Debug.Log("Was4Plus 2");
+                        Was4Plus = true;
+                    }
+                        
                     if (line.Count >= 3)
                     {
-                        /*if (line.Count >= 4) bonusRow[j] = (int)ChipBehaviour.chipTypes.rocket;
-                        foreach (var iterChip in horizontalLine)
-                            if (line.Contains(iterChip))
-                                bonusRow[j] = (int)ChipBehaviour.chipTypes.rainbow;*/
                         isNewCombinations = true;
                         AddListOfChipsToDelete(line);
                     }
@@ -673,7 +685,7 @@ public class GameBehaviour : MonoBehaviour
 
         int row = chip.row;
         int col = chip.col;
-        
+
         int currentType = SafeGetType(chip.row, chip.col);
 
         SquareCheck(chip);
@@ -720,24 +732,25 @@ public class GameBehaviour : MonoBehaviour
 
         bool isMatch = false;
 
+        if (horizontalLine.Count > 3 || verticalLine.Count > 3)
+        {
+            Debug.Log("Was4Plus = true; 3");
+            Was4Plus = true;
+        }
+
         if (horizontalLine.Count >= 3)
         {
-            //if (horizontalLine.Count >= 4) bonusRow[col] = (int)ChipBehaviour.chipTypes.bomb;
             AddListOfChipsToDelete(horizontalLine);
             isMatch = true;
         }
 
         if (verticalLine.Count >= 3)
         {
-            //if (verticalLine.Count >= 4) bonusRow[col] = (int)ChipBehaviour.chipTypes.rocket;
             AddListOfChipsToDelete(verticalLine);
             isMatch = true;
         }
 
-
-        //3 vertical and 3 horizontal simultaniously!
-        //if (verticalLine.Count >= 3 && horizontalLine.Count >= 3) bonusRow[col] = (int)ChipBehaviour.chipTypes.rainbow;
-
+        
         if (isMatch)
         {
             CollectMatches();
@@ -855,7 +868,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //we don't need Unity physics in shuffle, chips exchange etc...
-    private void SetPhysics(bool enabled)
+    private static void SetPhysics(bool enabled)
     {
         for (int i = 0; i < MAX_ROWS; i++)
         {
@@ -893,7 +906,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //generate one of the random number [0, maxNumber) but except excludes, DON'T try to use it if excludes more than maxNumber or equal
-    private int GetRandomWithExcludes(int maxNumber, List<int> excludes)
+    private static int GetRandomWithExcludes(int maxNumber, List<int> excludes)
     {
         if (excludes.Count >= maxNumber)
         {
@@ -921,7 +934,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //first pair - first chip, second pair - second chip
-    private Vector4 GetAnyPossibleMove()
+    private static Vector4 GetAnyPossibleMove()
     {
         var noMatchVector = new Vector2(-1, -1);
         for (int i = 0; i < MAX_ROWS; i++)
@@ -939,7 +952,7 @@ public class GameBehaviour : MonoBehaviour
         return new Vector4(-1, -1, -1, -1);
     }
 
-    private Vector2 GetPossibleMovesForChip(int row, int col)
+    private static Vector2 GetPossibleMovesForChip(int row, int col)
     {
         //try move up
         if (row + 1 < MAX_ROWS)
@@ -981,7 +994,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //looking for a potential move
-    private bool VirtualMoveCheck(int newRow, int newCol, int initRow, int initCol)
+    private static bool VirtualMoveCheck(int newRow, int newCol, int initRow, int initCol)
     {
         //HORIZONTAL CHECK
         if (newRow != initRow)
@@ -1037,7 +1050,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //return type of chip is available, -1 if not
-    private int SafeGetType(int row, int col)
+    private static int SafeGetType(int row, int col)
     {
         if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLS)
         {
@@ -1061,7 +1074,7 @@ public class GameBehaviour : MonoBehaviour
         */
     }
 
-    private void EnablePlayerControl(bool skipCheck)
+    private static void EnablePlayerControl(bool skipCheck)
     {
         if (skipCheck || GetAnyPossibleMove() != noMatchVector4)
         {
@@ -1316,4 +1329,53 @@ public class GameBehaviour : MonoBehaviour
         Task.Delay(200).ContinueWith(t => FullMatchCheck());
 
     }
+
+    internal static void DamageHero(int v)
+    {
+        HeroHP -= v;
+        RefreshLabels();
+        CheckWinLose();
+        
+    }
+
+
+    internal static void DamageEnemy(int v)
+    {
+        EnemyHP -= v;
+        RefreshLabels();
+        CheckWinLose();
+    }
+
+
+    private static void RefreshLabels()
+    {
+        var HeroHPLabel = GameObject.Find("HealthCaption");
+        HeroHPLabel.GetComponent<Text>().text = "HP: " + HeroHP + "/" + HeroMaxHP;
+
+        var EnemyHPLabel = GameObject.Find("HealthEnemy");
+        EnemyHPLabel.GetComponent<Text>().text = "HP: " + EnemyHP + "/" + EnemyMaxHP;
+    }
+
+    internal static void Win()
+    {
+        SceneManager.UnloadSceneAsync("M3Scene");
+        MapLogic.Holder.SetActive(true);
+        MapLogic.WinAndFinishHalfwayMove();
+    }
+
+
+    internal static void Lose()
+    {
+        SceneManager.UnloadSceneAsync("M3Scene");
+        MapLogic.Holder.SetActive(true);
+        MapLogic.ReturnHalfwayMove();
+    }
+
+    private static void EnemyAttack()
+    {
+        HeroHP -= 3;
+        RefreshLabels();
+        CheckWinLose();
+    }
+
 }

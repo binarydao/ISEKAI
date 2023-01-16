@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Buttons\MenuVideoClick.cs" />
     <Compile Include="Assets\Scripts\Buttons\ModeChangeListButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\NextFreeLevelClick.cs" />
+    <Compile Include="Assets\Scripts\Buttons\PauseButtonBehaviour.cs" />
     <Compile Include="Assets\Scripts\Buttons\PlayButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\ProgressElement.cs" />
     <Compile Include="Assets\Scripts\Buttons\ProgressModeButton.cs" />
@@ -115,7 +116,6 @@
     <Compile Include="Assets\Scripts\ModePage.cs" />
     <Compile Include="Assets\Scripts\MuteButtonBehaviour.cs" />
     <Compile Include="Assets\Scripts\Parralax.cs" />
-    <Compile Include="Assets\Scripts\PauseButtonBehaviour.cs" />
     <Compile Include="Assets\Scripts\PreferenceSave.cs" />
     <Compile Include="Assets\Scripts\ProgressBarClass.cs" />
     <Compile Include="Assets\Scripts\QuestLogic.cs" />
