@@ -10,7 +10,7 @@ public class ChipBehaviour : MonoBehaviour
     private const float DESTROY_TIME = 0.3f;
 
     //moving animation
-    private const float MOVE_TIME = 0.5f;
+    private const float MOVE_TIME = 0.25f;
 
     //swipe support
     internal static ChipBehaviour startSwipeChip;

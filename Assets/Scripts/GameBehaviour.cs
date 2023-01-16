@@ -9,7 +9,7 @@ using Random = System.Random;
 public class GameBehaviour : MonoBehaviour
 {
     internal const int SCORES_FOR_CHIP = 100;
-    private const int BASE_CHIP_TYPES = 3;
+    private const int BASE_CHIP_TYPES = 6;
     private const int TURNS_FOR_GAME = 200;
     private const int SCORES_TO_WIN = 400000;
     private const int TIME_BEFORE_HINT = 1000000;
@@ -1054,9 +1054,11 @@ public class GameBehaviour : MonoBehaviour
 
     private void UpdateScore()
     {
+        /*
         var textFieldObject = GameObject.Find("Score Text");
         var textField = textFieldObject.GetComponent<Text>();
         textField.text = "Score: " + ScorePoints + "     Turns left: " + TurnsLeft;
+        */
     }
 
     private void EnablePlayerControl(bool skipCheck)
