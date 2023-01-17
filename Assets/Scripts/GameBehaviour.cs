@@ -75,6 +75,8 @@ public class GameBehaviour : MonoBehaviour
 
     private static bool Was4Plus = false;
 
+    private static GameObject StateCaption;
+
 
     internal int ScorePoints
     {
@@ -120,6 +122,8 @@ public class GameBehaviour : MonoBehaviour
         GameObject enemyIcon = GameObject.Find("EnemyPortrait");
         SpriteRenderer enemySprite = enemyIcon.GetComponent<SpriteRenderer>();
         enemySprite.sprite = Resources.Load<Sprite>("Enemies/Enemy" + MapLogic.enemyId);
+
+         StateCaption = GameObject.Find("StateCaption");
     }
 
     //make/unmake field active
@@ -154,11 +158,12 @@ public class GameBehaviour : MonoBehaviour
             {
                 if (!Was4Plus)
                 {
-                    EnemyAttack();
+                    EnemyAttack(3);
                 }
                 Was4Plus = false;
                 if (!FullMatchCheck())
                 {
+                    StateCaption.GetComponent<Text>().text = "4+ chips - Free move!";
                     CheckWinLose();
                 }
             }
@@ -1332,7 +1337,7 @@ public class GameBehaviour : MonoBehaviour
         HeroHP -= v;
         RefreshLabels();
         CheckWinLose();
-        
+        StateCaption.GetComponent<Text>().text = "Enemy attacked: " + v + " HP";
     }
 
 
@@ -1341,6 +1346,7 @@ public class GameBehaviour : MonoBehaviour
         EnemyHP -= v;
         RefreshLabels();
         CheckWinLose();
+        StateCaption.GetComponent<Text>().text = "You damaged enemy: " + v + " HP";
     }
 
 
@@ -1368,9 +1374,9 @@ public class GameBehaviour : MonoBehaviour
         MapLogic.ReturnHalfwayMove();
     }
 
-    private static void EnemyAttack()
+    private static void EnemyAttack(int number)
     {
-        HeroHP -= 3;
+        HeroHP -= number;
         RefreshLabels();
         CheckWinLose();
     }
