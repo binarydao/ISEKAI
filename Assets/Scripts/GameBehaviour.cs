@@ -8,7 +8,7 @@ using Random = System.Random;
 
 public class GameBehaviour : MonoBehaviour
 {
-    private const int BASE_CHIP_TYPES = 4;
+    private const int BASE_CHIP_TYPES = 6;
     private const int TIME_BEFORE_HINT = 1000000;
 
     //min 4, max 9
@@ -123,7 +123,11 @@ public class GameBehaviour : MonoBehaviour
         SpriteRenderer enemySprite = enemyIcon.GetComponent<SpriteRenderer>();
         enemySprite.sprite = Resources.Load<Sprite>("Enemies/Enemy" + MapLogic.enemyId);
 
-         StateCaption = GameObject.Find("StateCaption");
+        StateCaption = GameObject.Find("StateCaption");
+
+        HeroHP = 20;
+        EnemyHP = 20;
+        RefreshLabels();
     }
 
     //make/unmake field active
@@ -156,14 +160,9 @@ public class GameBehaviour : MonoBehaviour
 
             if (!isWaitingChipsFall)
             {
-                if (!Was4Plus)
-                {
-                    EnemyAttack(3);
-                }
-                Was4Plus = false;
+   
                 if (!FullMatchCheck())
                 {
-                    StateCaption.GetComponent<Text>().text = "4+ chips - Free move!";
                     CheckWinLose();
                 }
             }
@@ -659,6 +658,15 @@ public class GameBehaviour : MonoBehaviour
         bool secondSuccessful = СheckAndDestroyForChip(secondChip, selectedChip.Type);
         if (firstSuccessful || secondSuccessful)
         {
+            if (!Was4Plus)
+            {
+                EnemyAttack(3);
+            }
+            else
+            {
+                StateCaption.GetComponent<Text>().text = "4+ chips - Free move!";
+            }
+            Was4Plus = false;
             audioSource.PlayOneShot(matchSound);
             TurnsLeft--;
         }
@@ -1332,24 +1340,6 @@ public class GameBehaviour : MonoBehaviour
 
     }
 
-    internal static void DamageHero(int v)
-    {
-        HeroHP -= v;
-        RefreshLabels();
-        CheckWinLose();
-        StateCaption.GetComponent<Text>().text = "Enemy attacked: " + v + " HP";
-    }
-
-
-    internal static void DamageEnemy(int v)
-    {
-        EnemyHP -= v;
-        RefreshLabels();
-        CheckWinLose();
-        StateCaption.GetComponent<Text>().text = "You damaged enemy: " + v + " HP";
-    }
-
-
     private static void RefreshLabels()
     {
         var HeroHPLabel = GameObject.Find("HealthCaption");
@@ -1374,11 +1364,21 @@ public class GameBehaviour : MonoBehaviour
         MapLogic.ReturnHalfwayMove();
     }
 
-    private static void EnemyAttack(int number)
+    public static void EnemyAttack(int number)
     {
         HeroHP -= number;
         RefreshLabels();
         CheckWinLose();
+        StateCaption.GetComponent<Text>().text = "Enemy attacked: " + number + " HP";
+    }
+
+
+    public static void HeroAttack(int number)
+    {
+        EnemyHP -= number;
+        RefreshLabels();
+        CheckWinLose();
+        StateCaption.GetComponent<Text>().text = "You attacked: " + number + " HP";
     }
 
 }

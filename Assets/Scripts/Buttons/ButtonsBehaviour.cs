@@ -70,11 +70,11 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void DamageHero()
     {
-        GameBehaviour.DamageHero(5);
+        GameBehaviour.EnemyAttack(5);
     }
 
     public void DamageEnemy()
     {
-        GameBehaviour.DamageEnemy(5);
+        GameBehaviour.HeroAttack(5);
     }
 }
