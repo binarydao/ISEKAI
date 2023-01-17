@@ -143,13 +143,11 @@ public class GameBehaviour : MonoBehaviour
         if (isWaitingChipsFall)
         {
             isWaitingChipsFall = false;
-            float maxY = 2.4f;
             for (int i = 0; i < MAX_ROWS; i++)
             {
                 for (int j = 0; j < MAX_COLS; j++)
                 {
-                    //rigidbody.velocity not works there well; WARNING: can be destroyed between updates
-                    if (chipArray[i, j].transform.position.y > -1.8 + chipArray[i, j].row*ChipBehaviour.ICON_HEIGHT)
+                    if (chipArray[i, j].transform.position.y > -3.4 + chipArray[i, j].row*ChipBehaviour.ICON_HEIGHT)
                     {
                         chipArray[i, j].transform.position = new Vector3(chipArray[i, j].transform.position.x, chipArray[i, j].transform.position.y - 0.1f, chipArray[i, j].transform.position.z);
                         isWaitingChipsFall = true;
@@ -160,7 +158,6 @@ public class GameBehaviour : MonoBehaviour
 
             if (!isWaitingChipsFall)
             {
-   
                 if (!FullMatchCheck())
                 {
                     CheckWinLose();
@@ -564,8 +561,7 @@ public class GameBehaviour : MonoBehaviour
             chipBehaviour.Create(type, MAX_ROWS + i, col, true);
             //set true coords
             chipBehaviour.row = MAX_ROWS - count + i;
-            chip.transform.position = new Vector2(chip.transform.position.x - fieldHalfWidth,
-                - fieldHalfHeight+(MAX_COLS + i)*ChipBehaviour.ICON_HEIGHT);
+            chip.transform.position = new Vector2(chip.transform.position.x - fieldHalfWidth, -fieldHalfHeight+(MAX_COLS + i)*ChipBehaviour.ICON_HEIGHT);
         }
     }
 

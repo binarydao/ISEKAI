@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class ChipBehaviour : MonoBehaviour
 {
-    internal const float ICON_WIDTH = 0.5f;
-    internal const float ICON_HEIGHT = 0.5f;
+    internal const float ICON_WIDTH = 1f;
+    internal const float ICON_HEIGHT = 1f;
 
     //destroying animation
     private const float DESTROY_TIME = 0.3f;
@@ -96,11 +96,11 @@ public class ChipBehaviour : MonoBehaviour
     private void ChangeType(int type)
     {
         this.type = type;
-        var texture = (Texture2D) Resources.Load("Chips/chip" + type);
-        var runtimeSprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height),
-            new Vector2(ICON_WIDTH, ICON_HEIGHT), 100.0f);
-        gameObject.GetComponent<SpriteRenderer>().sprite = runtimeSprite;
-        
+        /*var texture = (Texture2D) Resources.Load("Chips/chip" + type);
+        var runtimeSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height),
+            new Vector2(ICON_WIDTH, ICON_HEIGHT), 100.0f);*/
+        gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load("Chips/chip" + type, typeof(Sprite)) as Sprite;
+
     }
 
     //uses GRAPHIC positioning, not logic

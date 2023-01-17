@@ -30,3 +30,15 @@ Temp/UnityTempFile-b1adbb59c28887b4e97df3c6041aac52
 Temp/UnityTempFile-d5731a476fec46d4a924b7c91a7b6808
 Temp/UnityTempFile-e78416267a6dbc64d82916b3fb0b4589
 Temp/UnityTempFile-fc7dba445fde23b479f3b8c7ee0ee54b
+*.dll
+Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+Library/ScriptAssemblies/Assembly-CSharp.dll
+Temp/UnityTempFile-427d84a0f2b769841b9702c79146a474
+*.dll
+*.pdb
+Temp/UnityTempFile-592ec5190776b1e42b74fdb33a90ad6e
+Library/ScriptAssemblies/Assembly-CSharp.pdb
+Library/ScriptAssemblies/Assembly-CSharp.dll
+Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+Library/metadata/f0/f03e6c24c56cde143977bb3356ea60bc
+Library/assetDatabase3
