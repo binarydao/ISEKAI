@@ -313,7 +313,6 @@ public class GameBehaviour : MonoBehaviour
                 {
                     if (line.Count > 3)
                     {
-                        Debug.Log("Was4Plus 1");
                         Was4Plus = true;
                     }
                         
@@ -345,7 +344,6 @@ public class GameBehaviour : MonoBehaviour
                 {
                     if (line.Count > 3)
                     {
-                        Debug.Log("Was4Plus 2");
                         Was4Plus = true;
                     }
                         
@@ -734,7 +732,6 @@ public class GameBehaviour : MonoBehaviour
 
         if (horizontalLine.Count > 3 || verticalLine.Count > 3)
         {
-            Debug.Log("Was4Plus = true; 3");
             Was4Plus = true;
         }
 

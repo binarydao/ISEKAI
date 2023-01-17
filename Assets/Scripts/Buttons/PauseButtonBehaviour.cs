@@ -19,7 +19,6 @@ public class PauseButtonBehaviour : MonoBehaviour {
 
     public void PauseClick()
     {
-        Debug.Log("PauseClick");
         GameBehaviour.instance.Pause();
         if(buttonCaption.text == "PAUSE")
         {

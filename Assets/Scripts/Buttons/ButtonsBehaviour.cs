@@ -23,13 +23,13 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void LoseClick()
     {
-        GameBehaviour.Win();
+        GameBehaviour.Lose();
 
     }
 
     public void WinClick()
     {
-        GameBehaviour.Lose();
+        GameBehaviour.Win();
        
     }
 

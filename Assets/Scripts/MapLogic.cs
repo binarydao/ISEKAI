@@ -30,14 +30,12 @@ public class MapLogic : MonoBehaviour
     internal static void WinAndFinishHalfwayMove()
     {
         DestroyEnemy();
-        Debug.Log("WinAndFinishHalfwayMove");
         TryMove(DestinationId, false);
         IsWayEnemyPassed = true;
     }
 
     internal static void ReturnHalfwayMove()
     {
-        Debug.Log("ReturnHalfwayMove");
         TryMove(CurrentLocationId, true);
         IsWayEnemyPassed = true;
     }
@@ -83,9 +81,7 @@ public class MapLogic : MonoBehaviour
     private static void DestroyEnemy()
     {
         string nameString = "Enemy" + enemyId;
-        Debug.Log(nameString);
         GameObject enemyIcon = GameObject.Find(nameString);
-        Debug.Log(enemyIcon);
         enemyIcon.SetActive(false);
         Destroy(enemyIcon);
 
@@ -168,8 +164,6 @@ public class MapLogic : MonoBehaviour
         startTime = Time.time;
         StartPoint = HeroIcon.transform.position;
         EndPoint = finishPoint;
-        Debug.Log("StartPoint: " + StartPoint);
-        Debug.Log("EndPoint: " + EndPoint);
 
         EndPoint.z = StartPoint.z;
         journeyLength = Vector3.Distance(StartPoint, EndPoint);

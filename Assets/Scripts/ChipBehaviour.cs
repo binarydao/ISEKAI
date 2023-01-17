@@ -146,7 +146,6 @@ public class ChipBehaviour : MonoBehaviour
         {
             halo.enabled = true;
             GameBehaviour.selectedChip = this;
-            Debug.Log("Selected chip row:" + row + "; col: " + col);
         }
         //try to change places?
         else if (IsChipsAdjacent(GameBehaviour.selectedChip, this))
@@ -161,7 +160,6 @@ public class ChipBehaviour : MonoBehaviour
             GameBehaviour.selectedChip.halo.enabled = false;
             halo.enabled = true;
             GameBehaviour.selectedChip = this;
-            Debug.Log("Selected chip row:" + row + "; col: " + col);
         }
     }
 
@@ -177,7 +175,6 @@ public class ChipBehaviour : MonoBehaviour
     {
         if (isDestroying)
         {
-            Debug.Log("Already destroying, return");
             return;
         }
             
