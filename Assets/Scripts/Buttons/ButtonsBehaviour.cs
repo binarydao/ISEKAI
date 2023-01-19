@@ -70,7 +70,7 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void DamageHero()
     {
-        GameBehaviour.EnemyAttack(5);
+        GameBehaviour.instance.DelayedEnemyAttack(5);
     }
 
     public void DamageEnemy()

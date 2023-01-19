@@ -77,6 +77,8 @@ public class GameBehaviour : MonoBehaviour
 
     private static GameObject StateCaption;
 
+    private static int EnemyDamage;
+
 
     internal int ScorePoints
     {
@@ -275,7 +277,7 @@ public class GameBehaviour : MonoBehaviour
     }
 
     //are we done yet?
-    private static void CheckWinLose()
+    private void CheckWinLose()
     {
         if(HeroHP <=0 )
         {
@@ -656,7 +658,8 @@ public class GameBehaviour : MonoBehaviour
         {
             if (!Was4Plus)
             {
-                EnemyAttack(3);
+                HeroAttack(3);
+                DelayedEnemyAttack(3);
             }
             else
             {
@@ -1341,6 +1344,9 @@ public class GameBehaviour : MonoBehaviour
         var HeroHPLabel = GameObject.Find("HealthCaption");
         HeroHPLabel.GetComponent<Text>().text = "HP: " + HeroHP + "/" + HeroMaxHP;
 
+        var HeroProgressBar = GameObject.Find("HeroProgressBar");
+        HeroProgressBar.GetComponent<ProgressBarClass>().SetProgress(HeroHP);
+
         var EnemyHPLabel = GameObject.Find("HealthEnemy");
         EnemyHPLabel.GetComponent<Text>().text = "HP: " + EnemyHP + "/" + EnemyMaxHP;
     }
@@ -1360,7 +1366,22 @@ public class GameBehaviour : MonoBehaviour
         MapLogic.ReturnHalfwayMove();
     }
 
-    public static void EnemyAttack(int number)
+    public void DelayedEnemyAttack(int number)
+    {
+        HeroHP -= number;
+        RefreshLabels();
+        
+        EnemyDamage = number;
+        Invoke("EnemyAttackPart2", 1);
+    }
+
+    private void EnemyAttackPart2()
+    {
+        StateCaption.GetComponent<Text>().text = "Enemy attacked: " + EnemyDamage + " HP";
+        CheckWinLose();
+    }
+
+    public void ImmediateEnemyAttack(int number)
     {
         HeroHP -= number;
         RefreshLabels();
@@ -1373,7 +1394,7 @@ public class GameBehaviour : MonoBehaviour
     {
         EnemyHP -= number;
         RefreshLabels();
-        CheckWinLose();
+        instance.CheckWinLose();
         StateCaption.GetComponent<Text>().text = "You attacked: " + number + " HP";
     }
 
