@@ -1341,6 +1341,7 @@ public class GameBehaviour : MonoBehaviour
 
     private static void RefreshLabels()
     {
+        
         var HeroHPLabel = GameObject.Find("HealthCaption");
         HeroHPLabel.GetComponent<Text>().text = "HP: " + HeroHP + "/" + HeroMaxHP;
 
@@ -1349,6 +1350,9 @@ public class GameBehaviour : MonoBehaviour
 
         var EnemyHPLabel = GameObject.Find("HealthEnemy");
         EnemyHPLabel.GetComponent<Text>().text = "HP: " + EnemyHP + "/" + EnemyMaxHP;
+
+        var EnemyProgressBar = GameObject.Find("EnemyProgressBar");
+        EnemyProgressBar.GetComponent<ProgressBarClass>().SetProgress(EnemyHP);
     }
 
     internal static void Win()

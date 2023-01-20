@@ -6,15 +6,15 @@ using UnityEngine.Video;
 
 public class ProgressBarClass : MonoBehaviour
 {
-    private static Slider slider;
+    private Slider slider;
 
-    private static float targetProgress = 0;
-    private static float FillSpeed = 0.6f;
+    private float targetProgress = 0;
+    private float FillSpeed = 0.6f;
     
-    private static long minValue;
-    private static long maxValue;
+    private long minValue;
+    private long maxValue;
 
-    private static Vector2 desiredPos;
+    private Vector2 desiredPos;
 
     private void Awake()
     {
@@ -31,10 +31,11 @@ public class ProgressBarClass : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Math.Abs(slider.value - targetProgress)>0.01)
+        if (Math.Abs(slider.value - targetProgress)>0.1)
         {
             slider.value += FillSpeed * Time.deltaTime;
         }
+
     }
 
     public void SetProgress(float target)
