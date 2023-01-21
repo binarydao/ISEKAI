@@ -93,6 +93,7 @@
     <Compile Include="Assets\Scripts\LocalizeForms\SettingsLocalize.cs" />
     <Compile Include="Assets\Scripts\LocalizeForms\StatsLocalize.cs" />
     <Compile Include="Assets\Scripts\LocationButton.cs" />
+    <Compile Include="Assets\Scripts\LootStruct.cs" />
     <Compile Include="Assets\Scripts\MapLogic.cs" />
     <Compile Include="Assets\Scripts\MapStructure.cs" />
     <Compile Include="Assets\Scripts\MuteButtonBehaviour.cs" />

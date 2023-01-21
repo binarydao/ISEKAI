@@ -79,28 +79,10 @@ public class GameBehaviour : MonoBehaviour
 
     private static int EnemyDamage;
 
+    private static int DamageAccumulated;
 
-    internal int ScorePoints
-    {
-        get { return scorePoints; }
-
-        set
-        {
-            scorePoints = value;
-            UpdateScore();
-        }
-    }
-
-    private int TurnsLeft
-    {
-        get { return turnsLeft; }
-
-        set
-        {
-            turnsLeft = value;
-            UpdateScore();
-        }
-    }
+    public static LootStruct GlobalLoot = new LootStruct();
+    public static LootStruct LocalLoot = new LootStruct();
 
     // Use this for initialization
     private void Start()
@@ -129,8 +111,40 @@ public class GameBehaviour : MonoBehaviour
 
         HeroHP = 20;
         EnemyHP = 20;
+
+        if(GlobalLoot.attack == 0)
+        {
+            GlobalLoot.attack = 1;
+            GlobalLoot.defense = 1;
+        }
+
+        LocalLoot = new LootStruct();
+
         RefreshLabels();
     }
+
+    internal int ScorePoints
+    {
+        get { return scorePoints; }
+
+        set
+        {
+            scorePoints = value;
+            UpdateScore();
+        }
+    }
+
+    private int TurnsLeft
+    {
+        get { return turnsLeft; }
+
+        set
+        {
+            turnsLeft = value;
+            UpdateScore();
+        }
+    }
+
 
     //make/unmake field active
     internal void Pause()
@@ -386,9 +400,47 @@ public class GameBehaviour : MonoBehaviour
 
     private void CollectMatches()
     {
+        DamageAccumulated = 0;
         foreach (var iterChip in DeleteChipsList)
         {
+            CollectLoot(iterChip);
             iterChip.StartDestroy();
+        }
+    }
+
+    private void CollectLoot(ChipBehaviour iterChip)
+    {
+        if(iterChip.Type == 0)
+        {
+            DamageAccumulated++;
+        }
+        if (iterChip.Type == 1)
+        {
+            GlobalLoot.defense++;
+            LocalLoot.defense++;
+        }
+        if (iterChip.Type == 2)
+        {
+            GlobalLoot.money++;
+            LocalLoot.money++;
+        }
+        if (iterChip.Type == 3)
+        {
+            HeroHP++;
+            if(HeroHP>20)
+            {
+                HeroHP = 20;
+            }
+        }
+        if (iterChip.Type == 4)
+        {
+            GlobalLoot.experience++;
+            LocalLoot.experience++;
+        }
+        if (iterChip.Type == 5)
+        {
+            GlobalLoot.mana++;
+            LocalLoot.mana++;
         }
     }
 
@@ -656,9 +708,9 @@ public class GameBehaviour : MonoBehaviour
         bool secondSuccessful = СheckAndDestroyForChip(secondChip, selectedChip.Type);
         if (firstSuccessful || secondSuccessful)
         {
+            HeroAttack(DamageAccumulated);
             if (!Was4Plus)
             {
-                HeroAttack(3);
                 DelayedEnemyAttack(3);
             }
             else
@@ -1353,6 +1405,22 @@ public class GameBehaviour : MonoBehaviour
 
         var EnemyProgressBar = GameObject.Find("EnemyProgressBar");
         EnemyProgressBar.GetComponent<ProgressBarClass>().SetProgress(EnemyHP);
+
+
+        var AttackCaption = GameObject.Find("AttackCaption");
+        AttackCaption.GetComponent<Text>().text = "Attack: " + GlobalLoot.attack;
+
+        var DefenceCaption = GameObject.Find("DefenceCaption");
+        DefenceCaption.GetComponent<Text>().text = "Defence: " + GlobalLoot.defense;
+
+        var CoinCaption = GameObject.Find("CoinCaption");
+        CoinCaption.GetComponent<Text>().text = "Coins: " + GlobalLoot.money;
+
+        var ManaCaption = GameObject.Find("ManaCaption");
+        ManaCaption.GetComponent<Text>().text = "Mana: " + GlobalLoot.mana;
+
+        var ExpCaption = GameObject.Find("ExpCaption");
+        ExpCaption.GetComponent<Text>().text = "Exp: " + GlobalLoot.experience;
     }
 
     internal static void Win()
