@@ -75,7 +75,7 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void DamageEnemy()
     {
-        GameBehaviour.HeroAttack(5);
+        GameBehaviour.instance.HeroAttack(5);
     }
 
     public void AutoBattleClick()

@@ -187,8 +187,8 @@ public class GameBehaviour : MonoBehaviour
             {
                 if (!FullMatchCheck())
                 {
-                    IsPlayerTurn = !IsPlayerTurn;
-                    CheckWinLose();
+                    if(IsPlayerTurn)
+                        NextTurnHandler();
                 }
             }
         }
@@ -200,6 +200,30 @@ public class GameBehaviour : MonoBehaviour
             }
         }
     }
+
+    private void NextTurnHandler()
+    {
+        CheckWinLose();
+        IsPlayerTurn = !IsPlayerTurn;
+        if (IsPlayerTurn)
+            TurnToPlayer();
+        else
+            TurnToEnemy();
+    }
+
+    
+    private void TurnToPlayer()
+    {
+        Debug.Log("TurnToPlayer");
+        EnablePlayerControl(false);
+    }
+
+    private void TurnToEnemy()
+    {
+        Debug.Log("TurnToEnemy");
+        DelayedEnemyAttack(3);
+    }
+
 
     //uses same halo as in check
     private void ShowHint()
@@ -311,9 +335,6 @@ public class GameBehaviour : MonoBehaviour
         } else if (EnemyHP <=0)
         {
             Win();
-        } else
-        {
-            EnablePlayerControl(false);
         }
     }
 
@@ -723,11 +744,12 @@ public class GameBehaviour : MonoBehaviour
             HeroAttack(DamageAccumulated);
             if (!Was4Plus)
             {
-                DelayedEnemyAttack(3);
+                NextTurnHandler();
             }
             else
             {
                 StateCaption.GetComponent<Text>().text = "4+ chips - Free move!";
+                TurnToPlayer();
             }
             Was4Plus = false;
             audioSource.PlayOneShot(matchSound);
@@ -1149,8 +1171,10 @@ public class GameBehaviour : MonoBehaviour
 
     private void EnablePlayerControl(bool skipCheck)
     {
+
         if (skipCheck || GetAnyPossibleMove() != noMatchVector4)
         {
+            isFieldActive = true;
             if (IsAutoBattle)
             {
                 AutoTurn();
@@ -1158,7 +1182,6 @@ public class GameBehaviour : MonoBehaviour
             else
             { 
                 SetPhysics(true);
-                isFieldActive = true;
                 startTurnTime = Time.time;
                 isHintShowed = false;
             }            
@@ -1171,7 +1194,11 @@ public class GameBehaviour : MonoBehaviour
 
     private void AutoTurn()
     {
-        Debug.Log("Autoturn");
+        if(!isFieldActive)
+        {
+            return;
+        }
+        isFieldActive = false;
         if(GlobalLoot.mana>5)
         {
             if(HeroHP <10 )
@@ -1183,6 +1210,7 @@ public class GameBehaviour : MonoBehaviour
                 TryFireball();
             }
             AutoTurn();
+            return;
         }
         Vector4 possibleMove = GetAnyPossibleMove();
         selectedChip = chipArray[(int)possibleMove.x, (int)possibleMove.y];
@@ -1491,6 +1519,7 @@ public class GameBehaviour : MonoBehaviour
     {
         StateCaption.GetComponent<Text>().text = "Enemy attacked: " + EnemyDamage + " HP";
         CheckWinLose();
+        NextTurnHandler();
     }
 
     public void ImmediateEnemyAttack(int number)
@@ -1502,11 +1531,11 @@ public class GameBehaviour : MonoBehaviour
     }
 
 
-    public static void HeroAttack(int number)
+    public void HeroAttack(int number)
     {
         EnemyHP -= number;
         RefreshLabels();
-        instance.CheckWinLose();
+        CheckWinLose();
         StateCaption.GetComponent<Text>().text = "You attacked: " + number + " HP";
     }
 
