@@ -67,7 +67,9 @@
     <Compile Include="Assets\Scripts\Buttons\ClearAchivementsButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\CloseGameButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\DLCButton.cs" />
+    <Compile Include="Assets\Scripts\Buttons\FireballButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\GameWinButton.cs" />
+    <Compile Include="Assets\Scripts\Buttons\HealButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\LibraryLoc.cs" />
     <Compile Include="Assets\Scripts\Buttons\MenuVideoClick.cs" />
     <Compile Include="Assets\Scripts\Buttons\PauseButtonBehaviour.cs" />

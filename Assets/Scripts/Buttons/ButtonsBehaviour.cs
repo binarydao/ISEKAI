@@ -77,4 +77,9 @@ public class ButtonsBehaviour : MonoBehaviour {
     {
         GameBehaviour.HeroAttack(5);
     }
+
+    public void AutoBattleClick()
+    {
+        GameBehaviour.instance.ToggleAutoBattle();
+    }
 }

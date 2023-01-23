@@ -64,9 +64,14 @@ public class GameBehaviour : MonoBehaviour
     public static ChipBehaviour selectedChip;
 
     private static float startTurnTime;
+
+
+
     private int turnsLeft;
 
     private List<ChipBehaviour> DeleteChipsList;
+
+
 
     private static int HeroHP = 20;
     private static int HeroMaxHP = 20;
@@ -84,10 +89,16 @@ public class GameBehaviour : MonoBehaviour
     public static LootStruct GlobalLoot = new LootStruct();
     public static LootStruct LocalLoot = new LootStruct();
 
+    private bool IsAutoBattle = false;
+    private bool IsPlayerTurn;
+
     // Use this for initialization
     private void Start()
     {
         instance = this;
+
+        IsAutoBattle = false;
+        IsPlayerTurn = true;
 
         random = new Random();
         GenerateField();
@@ -176,6 +187,7 @@ public class GameBehaviour : MonoBehaviour
             {
                 if (!FullMatchCheck())
                 {
+                    IsPlayerTurn = !IsPlayerTurn;
                     CheckWinLose();
                 }
             }
@@ -1135,19 +1147,47 @@ public class GameBehaviour : MonoBehaviour
         */
     }
 
-    private static void EnablePlayerControl(bool skipCheck)
+    private void EnablePlayerControl(bool skipCheck)
     {
         if (skipCheck || GetAnyPossibleMove() != noMatchVector4)
         {
-            SetPhysics(true);
-            isFieldActive = true;
-            startTurnTime = Time.time;
-            isHintShowed = false;
+            if (IsAutoBattle)
+            {
+                AutoTurn();
+            }
+            else
+            { 
+                SetPhysics(true);
+                isFieldActive = true;
+                startTurnTime = Time.time;
+                isHintShowed = false;
+            }            
         }
         else
         {
             Shuffle();
         }
+    }
+
+    private void AutoTurn()
+    {
+        Debug.Log("Autoturn");
+        if(GlobalLoot.mana>5)
+        {
+            if(HeroHP <10 )
+            {
+                TryHeal();
+            }
+            else
+            {
+                TryFireball();
+            }
+            AutoTurn();
+        }
+        Vector4 possibleMove = GetAnyPossibleMove();
+        selectedChip = chipArray[(int)possibleMove.x, (int)possibleMove.y];
+        secondChip = chipArray[(int)possibleMove.z, (int)possibleMove.w];
+        TrySwipeWith(secondChip);
     }
 
     private int testCase = 25;
@@ -1468,6 +1508,57 @@ public class GameBehaviour : MonoBehaviour
         RefreshLabels();
         instance.CheckWinLose();
         StateCaption.GetComponent<Text>().text = "You attacked: " + number + " HP";
+    }
+
+    internal void ToggleAutoBattle()
+    {
+        IsAutoBattle = !IsAutoBattle;
+        var AutoBattleText = GameObject.Find("AutoBattleText");
+        if(IsAutoBattle)
+        {
+            AutoBattleText.GetComponent<Text>().color = Color.green;
+
+            if (!isWaitingChipsFall)
+            {
+                AutoTurn();
+            }
+        }
+        else
+        {
+            AutoBattleText.GetComponent<Text>().color = Color.red;
+        }
+    }
+
+    internal void TryFireball()
+    {
+        if(GlobalLoot.mana >= 5)
+        {
+            GlobalLoot.mana -= 5;
+            HeroHP += 10;
+            if (HeroHP > 20)
+                HeroHP = 20;
+            RefreshLabels();
+            StateCaption.GetComponent<Text>().text = "You healed 10 HP";
+
+        }
+        else
+        {
+            StateCaption.GetComponent<Text>().text = "Not enough mana (5)";
+        }
+    }
+
+    internal void TryHeal()
+    {
+        var AutoBattleText = GameObject.Find("StateCaption");
+        if (GlobalLoot.mana >= 5)
+        {
+            GlobalLoot.mana -= 5;
+            HeroAttack(10);
+        }
+        else
+        {
+            StateCaption.GetComponent<Text>().text = "Not enough mana (5)";
+        }
     }
 
 }
