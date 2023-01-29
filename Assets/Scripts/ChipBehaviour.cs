@@ -22,7 +22,7 @@ public class ChipBehaviour : MonoBehaviour
     //selected halo
     internal Behaviour halo;
 
-    private bool isCreated;
+    //private bool isCreated;
     internal bool isDestroying;
     private bool isMoving;
 
@@ -88,8 +88,6 @@ public class ChipBehaviour : MonoBehaviour
         this.col = col;
         ChangeType(type);
         transform.position = new Vector2(col * ICON_WIDTH, row * ICON_HEIGHT);
-
-        isCreated = true;
     }
 
     //change both logic and graphic of chip
@@ -114,16 +112,28 @@ public class ChipBehaviour : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         startSwipeChip = this;
     }
 
     private void OnMouseEnter()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         lastMouseEnterSprite = this;
     }
 
     private void OnMouseUp()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         //some animation or moving in process, skip click
         if (!GameBehaviour.isFieldActive) return;
         if (startSwipeChip != lastMouseEnterSprite)

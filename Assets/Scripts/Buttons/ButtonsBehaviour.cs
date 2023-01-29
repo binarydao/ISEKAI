@@ -23,12 +23,20 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void LoseClick()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         GameBehaviour.Lose();
 
     }
 
     public void WinClick()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         GameBehaviour.Win();
        
     }
@@ -70,16 +78,34 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void DamageHero()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         GameBehaviour.instance.DelayedEnemyAttack(5);
     }
 
     public void DamageEnemy()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         GameBehaviour.instance.HeroAttack(5);
     }
 
     public void AutoBattleClick()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         GameBehaviour.instance.ToggleAutoBattle();
+    }
+
+    public void CloseReward()
+    {
+        Debug.Log("CloseReward");
+        RewardWindow.CloseWindow();
     }
 }

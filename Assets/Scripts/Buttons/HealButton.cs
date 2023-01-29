@@ -21,6 +21,10 @@ public class HealButton : MonoBehaviour
 
     void OnMouseUp()
     {
+        if(GameBehaviour.GameOver)
+        {
+            return;
+        }
         Debug.Log("Heal click");
         GameBehaviour.instance.TryHeal();
     }

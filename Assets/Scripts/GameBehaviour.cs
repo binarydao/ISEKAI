@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Experimental.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = System.Random;
 
 public class GameBehaviour : MonoBehaviour
 {
+    public static GameObject GameBackground;
+
     private const int BASE_CHIP_TYPES = 6;
     private const int TIME_BEFORE_HINT = 1000000;
 
@@ -39,15 +43,12 @@ public class GameBehaviour : MonoBehaviour
     internal float fieldHalfWidth;
     public static bool isFieldActive;
     private static bool isHintShowed;
-    private bool isLose;
 
     private bool isMovingBack;
     private readonly bool isMuted;
     private bool isPaused;
 
-    private bool isShowRules;
     private bool isWaitingChipsFall;
-    private bool isWin;
 
     private AudioClip matchSound;
 
@@ -64,8 +65,6 @@ public class GameBehaviour : MonoBehaviour
     public static ChipBehaviour selectedChip;
 
     private static float startTurnTime;
-
-
 
     private int turnsLeft;
 
@@ -92,10 +91,14 @@ public class GameBehaviour : MonoBehaviour
     private bool IsAutoBattle = false;
     private bool IsPlayerTurn;
 
+    public static bool GameOver;
+
     // Use this for initialization
     private void Start()
     {
         instance = this;
+
+        GameBackground = GameObject.Find("Game Background");
 
         IsAutoBattle = false;
         IsPlayerTurn = true;
@@ -107,11 +110,6 @@ public class GameBehaviour : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
         matchSound = (AudioClip)Resources.Load("Sounds/matchSound");
 
-        pauseButton = GameObject.Find("Pause Button");
-        pauseButton.SetActive(false);
-        Pause();
-
-        isShowRules = true;
         isHintShowed = true;
 
         GameObject enemyIcon = GameObject.Find("EnemyPortrait");
@@ -132,6 +130,9 @@ public class GameBehaviour : MonoBehaviour
         LocalLoot = new LootStruct();
 
         RefreshLabels();
+
+        GameOver = false;
+        EnablePlayerControl(true);
     }
 
     internal int ScorePoints
@@ -155,15 +156,7 @@ public class GameBehaviour : MonoBehaviour
             UpdateScore();
         }
     }
-
-
-    //make/unmake field active
-    internal void Pause()
-    {
-        isPaused = !isPaused;
-        field.SetActive(!isPaused);
-    }
-
+    
     private void FixedUpdate()
     {
         //some chips are still falling using physics?
@@ -200,6 +193,21 @@ public class GameBehaviour : MonoBehaviour
             }
         }
     }
+
+    public static void Win()
+    {
+        GameOver = true;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("RewardWindow", LoadSceneMode.Additive);
+        RewardWindow.Win();
+    }
+
+    public static void Lose()
+    {
+        GameOver = true;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("RewardWindow", LoadSceneMode.Additive);
+        RewardWindow.Lose();
+    }
+
 
     private void NextTurnHandler()
     {
@@ -481,61 +489,6 @@ public class GameBehaviour : MonoBehaviour
     {
         var audioSource = GetComponent<AudioSource>();
         audioSource.mute = !audioSource.mute;
-    }
-
-    private void OnGUI()
-    {
-        //using non-transparent back for GUI
-        var texture = (Texture2D)Resources.Load("windowColor");
-        GUI.skin.window.normal.background = texture;
-        GUI.skin.window.onFocused.background = texture;
-        GUI.skin.window.onHover.background = texture;
-        GUI.skin.window.onNormal.background = texture;
-        if (isShowRules)
-        {
-            //GUI.ModalWindow(0, new Rect(Screen.width / 2 - 150, Screen.height / 2 - 75, 300, 100), showMission,"Mission");
-            ShowMission(0);
-        }
-        else if (isWin)
-        {
-            GUI.ModalWindow(1, new Rect((Screen.width / 2) - 150, (Screen.height / 2) - 75, 300, 100), ShowWin, "YOU WIN!");
-        }
-        else if (isLose)
-        {
-            GUI.ModalWindow(2, new Rect((Screen.width / 2) - 150, (Screen.height / 2) - 75, 300, 100), ShowLose, "You lose");
-        }
-    }
-
-    private void ShowMission(int windowID)
-    {
-        /*GUI.Label(new Rect(65, 20, 200, 250),
-            "Get " + SCORES_TO_WIN + " scores within " + TURNS_FOR_GAME + " turns. Good luck!");
-
-        if (GUI.Button(new Rect(110, 60, 80, 30), "OK"))
-        {*/
-        isShowRules = false;
-        Pause();
-        EnablePlayerControl(true);
-        pauseButton.SetActive(true);
-        //}
-    }
-
-    private void ShowWin(int windowID)
-    {
-        GUI.Label(new Rect(65, 20, 200, 250), "You beat this game, congratulation! Wanna try again?");
-        if (GUI.Button(new Rect(110, 60, 80, 30), "Restart"))
-        {
-            SceneManager.LoadScene("BaseScene");
-        }
-    }
-
-    private void ShowLose(int windowID)
-    {
-        GUI.Label(new Rect(65, 20, 200, 250), "You lose. Do you want another try?");
-        if (GUI.Button(new Rect(110, 60, 80, 30), "Restart"))
-        {
-            SceneManager.LoadScene("BaseScene");
-        }
     }
 
     //initial field generation. No autocollect at start but at least one possible move
@@ -1489,19 +1442,6 @@ public class GameBehaviour : MonoBehaviour
 
         var ExpCaption = GameObject.Find("ExpCaption");
         ExpCaption.GetComponent<Text>().text = "Exp: " + GlobalLoot.experience;
-    }
-
-    internal static void Win()
-    {
-        SceneManager.LoadScene("RewardWindow");
-        RewardWindow.Win();
-    }
-
-
-    internal static void Lose()
-    {
-        SceneManager.LoadScene("RewardWindow");
-        RewardWindow.Lose();
     }
 
     public void DelayedEnemyAttack(int number)

@@ -27,6 +27,8 @@ public class MapLogic : MonoBehaviour
 
     public static int enemyId = 1;
 
+    public static bool IsHalfwayPosition;
+
     internal static void WinAndFinishHalfwayMove()
     {
         DestroyEnemy();
@@ -39,9 +41,7 @@ public class MapLogic : MonoBehaviour
         TryMove(CurrentLocationId, true);
         IsWayEnemyPassed = true;
     }
-
-    private static bool IsHalfwayPosition = false;
-
+    
     public static GameObject Holder;
 
     // Start is called before the first frame update

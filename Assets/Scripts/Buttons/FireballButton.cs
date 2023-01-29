@@ -21,6 +21,10 @@ public class FireballButton : MonoBehaviour
 
     void OnMouseUp()
     {
+        if (GameBehaviour.GameOver)
+        {
+            return;
+        }
         Debug.Log("FireBall click");
         GameBehaviour.instance.TryFireball();
     }
