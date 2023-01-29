@@ -1493,17 +1493,15 @@ public class GameBehaviour : MonoBehaviour
 
     internal static void Win()
     {
-        SceneManager.UnloadSceneAsync("M3Scene");
-        MapLogic.Holder.SetActive(true);
-        MapLogic.WinAndFinishHalfwayMove();
+        SceneManager.LoadScene("RewardWindow");
+        RewardWindow.Win();
     }
 
 
     internal static void Lose()
     {
-        SceneManager.UnloadSceneAsync("M3Scene");
-        MapLogic.Holder.SetActive(true);
-        MapLogic.ReturnHalfwayMove();
+        SceneManager.LoadScene("RewardWindow");
+        RewardWindow.Lose();
     }
 
     public void DelayedEnemyAttack(int number)
