@@ -49,9 +49,21 @@ public class RewardWindow : MonoBehaviour
 
     public static void CloseWindow()
     {
-        SceneManager.UnloadSceneAsync("M3Scene");
-        SceneManager.UnloadSceneAsync("RewardWindow");
-        MapLogic.Holder.SetActive(true);
+        if (SceneManager.GetSceneByName("M3Scene").isLoaded)
+        {
+            SceneManager.UnloadSceneAsync("M3Scene");
+        }
+
+        if (SceneManager.GetSceneByName("MapScene").isLoaded)
+        {
+            SceneManager.UnloadSceneAsync("RewardWindow");
+            MapLogic.Holder.SetActive(true);
+        }
+        else
+        {
+            SceneManager.LoadScene("MapScene");
+        }
+        
         if (IsWin)
         {
             MapLogic.WinAndFinishHalfwayMove();

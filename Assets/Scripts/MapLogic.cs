@@ -146,6 +146,12 @@ public class MapLogic : MonoBehaviour
     public static void TryMove(int targetId, bool MovingBack)
     {
         GameObject locationPoint = GameObject.Find("Loc" + targetId);
+
+        if(locationPoint is null)
+        {
+            return;
+        }
+
         Vector3 finishPoint = locationPoint.transform.position;
         
 
