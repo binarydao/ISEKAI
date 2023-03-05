@@ -108,4 +108,10 @@ public class ButtonsBehaviour : MonoBehaviour {
         Debug.Log("CloseReward");
         RewardWindow.CloseWindow();
     }
+
+    public void CloseQuest()
+    {
+        Debug.Log("CloseQuest");
+        QuestWindow.CloseWindow();
+    }
 }

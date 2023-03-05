@@ -29,6 +29,10 @@ public class LocationButton : MonoBehaviour
 
     void OnMouseEnter()
     {
+        if (MapLogic.isQuestWindow)
+        {
+            return;
+        }
         Cursor.SetCursor(cursor, hotspot, CursorMode.Auto);
     }
 

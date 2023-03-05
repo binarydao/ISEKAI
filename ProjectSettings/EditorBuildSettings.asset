@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RewardWindow.unity
     guid: ff3eccf325db2c94f9b171e2134da5cb
+  - enabled: 1
+    path: Assets/Scenes/QuestWindow.unity
+    guid: 1ea1fd426984c0143b081bb67f8f1b29
   m_configObjects: {}

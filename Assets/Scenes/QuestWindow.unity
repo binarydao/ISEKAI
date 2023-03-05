@@ -621,7 +621,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1279564506}
-        m_MethodName: CloseReward
+        m_MethodName: CloseQuest
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -840,7 +840,6 @@ GameObject:
   - component: {fileID: 1780165907}
   - component: {fileID: 1780165906}
   - component: {fileID: 1780165905}
-  - component: {fileID: 1780165904}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -848,18 +847,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1780165904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1780165903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f8452b6ea0941a4e912894ab73ebdfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1780165905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -928,7 +915,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1780165903}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1601635627}

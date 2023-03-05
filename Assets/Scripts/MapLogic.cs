@@ -29,6 +29,8 @@ public class MapLogic : MonoBehaviour
 
     public static bool IsHalfwayPosition;
 
+    public static bool isQuestWindow;
+
     internal static void WinAndFinishHalfwayMove()
     {
         DestroyEnemy();
@@ -49,12 +51,15 @@ public class MapLogic : MonoBehaviour
     {
         HeroIcon = GameObject.Find("HeroIconPrefab");
         Holder = GameObject.Find("Holder");
+
+        isQuestWindow = true;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("QuestWindow", LoadSceneMode.Additive);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!IsMoving || !Holder.activeSelf)
+        if(!IsMoving || !Holder.activeSelf || isQuestWindow)
         {
             return;
         }

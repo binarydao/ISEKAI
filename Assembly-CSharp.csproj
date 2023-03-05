@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\ProgressBarClass.cs" />
     <Compile Include="Assets\Scripts\QuestLogic.cs" />
     <Compile Include="Assets\Scripts\QuestPrerequisite.cs" />
+    <Compile Include="Assets\Scripts\QuestWindow.cs" />
     <Compile Include="Assets\Scripts\RewardWindow.cs" />
     <Compile Include="Assets\Scripts\Steamworks.NET\SteamManager.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
