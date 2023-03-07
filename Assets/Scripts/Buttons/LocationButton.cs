@@ -29,7 +29,7 @@ public class LocationButton : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (MapLogic.isQuestWindow)
+        if (MapLogic.isPopupWindow)
         {
             return;
         }

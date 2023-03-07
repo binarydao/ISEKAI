@@ -66,7 +66,7 @@ public class RewardWindow : MonoBehaviour
         
         if (IsWin)
         {
-            MapLogic.WinAndFinishHalfwayMove();
+            MapLogic.ShowBoobies();
         }
         else
         {

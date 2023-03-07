@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\AnimationHandler.cs" />
     <Compile Include="Assets\Scripts\Buttons\ButtonsBehaviour.cs" />
     <Compile Include="Assets\Scripts\Buttons\FireballButton.cs" />
     <Compile Include="Assets\Scripts\Buttons\GameWinButton.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Assets\Scripts\ChipBehaviour.cs" />
     <Compile Include="Assets\Scripts\EnemiesStructure.cs" />
     <Compile Include="Assets\Scripts\GameBehaviour.cs" />
+    <Compile Include="Assets\Scripts\ImageHandler.cs" />
     <Compile Include="Assets\Scripts\LootStruct.cs" />
     <Compile Include="Assets\Scripts\MapLogic.cs" />
     <Compile Include="Assets\Scripts\MapStructure.cs" />

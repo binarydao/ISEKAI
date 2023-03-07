@@ -25,24 +25,15 @@ public class MapLogic : MonoBehaviour
     private static int CurrentLocationId = 1;
     private static int DestinationId = 1;
 
-    public static int enemyId = 1;
+    public static int enemyId = -1;
 
     public static bool IsHalfwayPosition;
 
-    public static bool isQuestWindow;
+    public static bool isPopupWindow;
 
-    internal static void WinAndFinishHalfwayMove()
-    {
-        DestroyEnemy();
-        TryMove(DestinationId, false);
-        IsWayEnemyPassed = true;
-    }
+    private static bool isAnimatedGirl = true;
 
-    internal static void ReturnHalfwayMove()
-    {
-        TryMove(CurrentLocationId, true);
-        IsWayEnemyPassed = true;
-    }
+
     
     public static GameObject Holder;
 
@@ -52,22 +43,30 @@ public class MapLogic : MonoBehaviour
         HeroIcon = GameObject.Find("HeroIconPrefab");
         Holder = GameObject.Find("Holder");
 
-        isQuestWindow = true;
+        isPopupWindow = true;
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("QuestWindow", LoadSceneMode.Additive);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!IsMoving || !Holder.activeSelf || isQuestWindow)
+        if(!IsMoving || !Holder.activeSelf || isPopupWindow)
         {
             return;
         }
+        
         // Distance moved equals elapsed time times speed..
         float distCovered = (Time.time - startTime) * speed;
 
         // Fraction of journey completed equals current distance divided by total distance.
         float fractionOfJourney = distCovered / journeyLength;
+        
+        if (float.IsNaN(StartPoint.x) || float.IsNaN(EndPoint.x) || float.IsNaN(fractionOfJourney))
+        {
+            IsMoving = false;
+            CheckLocationEnemy();
+            return;
+        }
 
         // Set our position as a fraction of the distance between the markers.
         HeroIcon.transform.position = Vector3.Lerp(StartPoint, EndPoint, fractionOfJourney);
@@ -85,6 +84,11 @@ public class MapLogic : MonoBehaviour
 
     private static void DestroyEnemy()
     {
+        Debug.Log("enemyId: " + enemyId);
+        if(enemyId<1)
+        {
+            return;
+        }
         string nameString = "Enemy" + enemyId;
         GameObject enemyIcon = GameObject.Find(nameString);
         enemyIcon.SetActive(false);
@@ -113,7 +117,38 @@ public class MapLogic : MonoBehaviour
             //проход и удаление в межлокациях
         }
 
-        private void CheckWayEnemy()
+    internal static void ShowBoobies()
+    {
+        if(isPopupWindow)
+        {
+            return;
+        }
+        isPopupWindow = true;
+        if(isAnimatedGirl)
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Girl1920Window", LoadSceneMode.Additive);
+        }
+        else
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Girl500Window", LoadSceneMode.Additive);
+        }
+        isAnimatedGirl = !isAnimatedGirl;
+    }
+
+    internal static void WinAndFinishHalfwayMove()
+    {
+        DestroyEnemy();
+        TryMove(DestinationId, false);
+        IsWayEnemyPassed = true;
+    }
+
+    internal static void ReturnHalfwayMove()
+    {
+        TryMove(CurrentLocationId, true);
+        IsWayEnemyPassed = true;
+    }
+
+    private void CheckWayEnemy()
     {
         IsWayEnemyPassed = true;
         enemyId = EnemiesStructure.WaysEnemies[CurrentLocationId][DestinationId];

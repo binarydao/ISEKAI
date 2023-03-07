@@ -20,6 +20,6 @@ public class QuestWindow : MonoBehaviour
     public static void CloseWindow()
     {
         SceneManager.UnloadSceneAsync("QuestWindow");
-        MapLogic.isQuestWindow = false;
+        MapLogic.isPopupWindow = false;
     }
 }
