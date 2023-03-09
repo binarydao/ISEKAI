@@ -10,7 +10,6 @@ public class ImageHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("ImageHandler start");
         currentGirl++;
         if (currentGirl > MAX_GIRL)
         {
