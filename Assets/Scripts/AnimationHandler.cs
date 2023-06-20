@@ -8,7 +8,7 @@ using UnityEngine.Video;
 public class AnimationHandler : MonoBehaviour
 {
 
-    private int currentState;
+    private int currentState = 1;
 
     private static int currentGirl = 0;
     private static float previousTime;
@@ -18,14 +18,12 @@ public class AnimationHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("AnimationHandler start");
         currentGirl++;
         if (currentGirl > MAX_GIRL)
         {
             currentGirl = 1;
         }
-        VideoPlayer videoPlayer = GameObject.Find("Video Player").GetComponent<VideoPlayer>();
-        videoPlayer.clip = (VideoClip)Resources.Load("video/video" + currentGirl + "_1");
+        VideoUpdate();
         previousTime = Time.time;
 }
 
@@ -40,14 +38,21 @@ public class AnimationHandler : MonoBehaviour
         }
     }        
 
-    public void NextState()
+    private void NextState()
     {
         currentState++;
         if(currentState > 3)
         {
             currentState = 1;
         }
+        VideoUpdate();
+    }
+
+    private void VideoUpdate()
+    {
         VideoPlayer videoPlayer = GameObject.Find("Video Player").GetComponent<VideoPlayer>();
-        videoPlayer.clip = (VideoClip)Resources.Load("video/video" + currentGirl + "_" + currentState);
+        string videoString = "video/video" + currentGirl + "_" + currentState + ".mp4";
+        Debug.Log("VideoUpdate, video: " + videoString);
+        videoPlayer.url = videoString;
     }
 }

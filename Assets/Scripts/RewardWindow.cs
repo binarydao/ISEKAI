@@ -9,16 +9,13 @@ public class RewardWindow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Start");
         var RewardCaption = GameObject.Find("RewardCaption");
         if (IsWin)
         {
-            Debug.Log("IsWin");
             RewardCaption.GetComponent<Text>().text = "YOU WIN";
         }
         else
         {
-            Debug.Log("not IsWin");
             RewardCaption.GetComponent<Text>().text = "YOU LOSE";
         }
 
@@ -37,13 +34,11 @@ public class RewardWindow : MonoBehaviour
 
     public static void Win()
     {
-        Debug.Log("Win function");
         IsWin = true;
     }
 
     public static void Lose()
     {
-        Debug.Log("Lose function");
         IsWin = false;
     }
 

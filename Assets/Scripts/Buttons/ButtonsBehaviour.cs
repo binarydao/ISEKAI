@@ -105,26 +105,21 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void CloseReward()
     {
-        Debug.Log("CloseReward");
         RewardWindow.CloseWindow();
     }
 
     public void CloseQuest()
     {
-        Debug.Log("CloseQuest");
         QuestWindow.CloseWindow();
     }
 
     public void ShowBoobies()
     {
-        Debug.Log("ShowBoobies");
         MapLogic.ShowBoobies();
-        //QuestWindow.CloseWindow();
     }
 
     public void CloseGirl500()
     {
-        Debug.Log("CloseGirl500");
         SceneManager.UnloadSceneAsync("Girl500Window");
         MapLogic.isPopupWindow = false;
         MapLogic.WinAndFinishHalfwayMove();
@@ -132,7 +127,6 @@ public class ButtonsBehaviour : MonoBehaviour {
 
     public void CloseGirl1920()
     {
-        Debug.Log("CloseGirl1920");
         SceneManager.UnloadSceneAsync("Girl1920Window");
         MapLogic.isPopupWindow = false;
         MapLogic.WinAndFinishHalfwayMove();

@@ -84,7 +84,6 @@ public class MapLogic : MonoBehaviour
 
     private static void DestroyEnemy()
     {
-        Debug.Log("enemyId: " + enemyId);
         if(enemyId<1)
         {
             return;
