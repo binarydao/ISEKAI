@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/MaskOnly.unity
+- path: Assets/Scenes/SlotFight.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
