@@ -14,10 +14,10 @@ public class GameBehaviour : MonoBehaviour
     private const int TIME_BEFORE_HINT = 1000000;
 
     //min 4, max 9
-    private const int MAX_ROWS = 8;
+    private const int MAX_ROWS = 4;
 
     //min 4, max 18
-    private const int MAX_COLS = 8;
+    private const int MAX_COLS = 5;
 
     internal static GameBehaviour instance;
 
@@ -161,7 +161,7 @@ public class GameBehaviour : MonoBehaviour
         if (isWaitingChipsFall)
         {
             isWaitingChipsFall = false;
-            for (int i = 0; i < MAX_ROWS; i++)
+           /* for (int i = 0; i < MAX_ROWS; i++) //магические числа - вон
             {
                 for (int j = 0; j < MAX_COLS; j++)
                 {
@@ -172,7 +172,7 @@ public class GameBehaviour : MonoBehaviour
                     }
                         
                 }
-            }
+            }*/
 
             if (!isWaitingChipsFall)
             {
@@ -492,10 +492,10 @@ public class GameBehaviour : MonoBehaviour
     //initial field generation. No autocollect at start but at least one possible move
     private void GenerateField()
     {
-        if (MAX_ROWS < 4 || MAX_COLS < 4)
+        /*if (MAX_ROWS < 4 || MAX_COLS < 4)
         {
             throw new Exception("Too small field for this game. Generate at least 4*4 field using MAX_ROWS and MAX_COLS constants.");
-        }
+        }*/
 
         if (MAX_ROWS > 9 || MAX_COLS > 18)
         {
@@ -617,26 +617,30 @@ public class GameBehaviour : MonoBehaviour
         field.transform.position = new Vector2(-fieldHalfWidth, -fieldHalfHeight);
     }
 
-    internal void TrySwipeWith(ChipBehaviour secondChip)
+    internal void TryMoveOneColDown(int ColumnNum)
     {
         for (int i = 0; i < MAX_ROWS; i++)
         {
-            for (int j = 0; j < MAX_COLS; j++)
             {
-                if (chipArray[i, j])
+                if (chipArray[i, ColumnNum])
                 {
-                    chipArray[i, j].halo.enabled = false;
+                    chipArray[i, ColumnNum].halo.enabled = false;
                 }
+
+                Vector3 finalPosition;
+                finalPosition = chipArray[i, ColumnNum].gameObject.transform.position;
+                finalPosition.y = (finalPosition.y - 50);
+                chipArray[i, ColumnNum].MoveTo(finalPosition);
             }
         }
 
         bonusRow = new int[MAX_COLS];
         isFieldActive = false;
         SetPhysics(false);
-        this.secondChip = secondChip;
+        /*this.secondChip = secondChip;
         movingCounter = 0;
         selectedChip.MoveTo(secondChip.gameObject.transform.position);
-        secondChip.MoveTo(selectedChip.gameObject.transform.position);
+        secondChip.MoveTo(selectedChip.gameObject.transform.position);*/
     }
 
     //bad move, return chips back
@@ -1150,7 +1154,7 @@ public class GameBehaviour : MonoBehaviour
             return;
         }
         isFieldActive = false;
-        if(GlobalLoot.mana>5)
+        /*if(GlobalLoot.mana>5) //убираем для очевидности
         {
             if(HeroHP <10 )
             {
@@ -1162,11 +1166,8 @@ public class GameBehaviour : MonoBehaviour
             }
             AutoTurn();
             return;
-        }
-        Vector4 possibleMove = GetAnyPossibleMove();
-        selectedChip = chipArray[(int)possibleMove.x, (int)possibleMove.y];
-        secondChip = chipArray[(int)possibleMove.z, (int)possibleMove.w];
-        TrySwipeWith(secondChip);
+        }*/
+        TryMoveOneColDown(0);
     }
 
     private int testCase = 25;

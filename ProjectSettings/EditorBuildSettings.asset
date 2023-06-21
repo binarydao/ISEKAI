@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MapScene.unity
     guid: 5d6db05d7a78c264cae953ea235b991e
   - enabled: 1
-    path: Assets/Scenes/M3Scene.unity
+    path: Assets/Scenes/SlotFight.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/RewardWindow.unity
@@ -24,3 +24,4 @@ EditorBuildSettings:
     path: Assets/Scenes/Girl1920Window.unity
     guid: ca3a5e9bbfff4a241b7a85a5e085af4e
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

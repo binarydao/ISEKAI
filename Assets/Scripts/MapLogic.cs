@@ -10,6 +10,11 @@ public class MapLogic : MonoBehaviour
 
     // Movement speed in units per second.
     private static float speed = 5.0F;
+    private static float speedTutorial = 0.005f;
+    private static float tutorialTop = 0.75f;
+    private static float tutorialDown = -0.5f;
+    private static bool tutorialMovingUp = true;
+    private static bool firstLocationEntered = false;
     // Time when the movement started.
     private static float startTime;
     // Total distance between the markers.
@@ -50,7 +55,9 @@ public class MapLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!IsMoving || !Holder.activeSelf || isPopupWindow)
+        TutorialArrowMove();
+
+        if (!IsMoving || !Holder.activeSelf || isPopupWindow)
         {
             return;
         }
@@ -79,6 +86,46 @@ public class MapLogic : MonoBehaviour
         {
             IsMoving = false;
             CheckLocationEnemy();
+        }
+    }
+
+    private static void TutorialArrowMove()
+    {
+        GameObject arrow_tutorial = GameObject.Find("arrow_tutorial");
+        if (!firstLocationEntered)
+        {
+            if (tutorialMovingUp)
+            {
+                if (arrow_tutorial.transform.position.y >= tutorialTop)
+                {
+                    tutorialMovingUp = false;
+                }
+                else
+                {
+                    Vector3 finishPoint = arrow_tutorial.transform.position;
+                    finishPoint.y = finishPoint.y + speedTutorial;
+                    arrow_tutorial.transform.position = finishPoint;
+                }
+            }
+            else
+            {
+                if (arrow_tutorial.transform.position.y <= tutorialDown)
+                {
+                    tutorialMovingUp = true;
+                }
+                {
+                    Vector3 finishPoint = arrow_tutorial.transform.position;
+                    finishPoint.y = finishPoint.y - speedTutorial;
+                    arrow_tutorial.transform.position = finishPoint;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Hide tutorial arrow");
+            Vector3 finishPoint = arrow_tutorial.transform.position;
+            finishPoint.z = 0;
+            arrow_tutorial.transform.position = finishPoint;
         }
     }
 
@@ -159,7 +206,7 @@ public class MapLogic : MonoBehaviour
 
             Holder.SetActive(false);
 
-            SceneManager.LoadSceneAsync("M3Scene", LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync("SlotFight", LoadSceneMode.Additive);
         }
         else
         {   
@@ -173,7 +220,7 @@ public class MapLogic : MonoBehaviour
         {
             Holder.SetActive(false);
 
-            SceneManager.LoadScene("M3Scene", LoadSceneMode.Additive);
+            SceneManager.LoadScene("SlotFight", LoadSceneMode.Additive);
         }
         else
         {
@@ -184,6 +231,7 @@ public class MapLogic : MonoBehaviour
 
     public static void TryMove(int targetId, bool MovingBack)
     {
+        firstLocationEntered = true;
         GameObject locationPoint = GameObject.Find("Loc" + targetId);
 
         if(locationPoint is null)
@@ -216,6 +264,8 @@ public class MapLogic : MonoBehaviour
         IsWayEnemyPassed = false;
         IsMoving = true;
     }
+
+
 
     private static bool IsPassable(int DestinationId)
     {

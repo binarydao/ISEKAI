@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class ChipBehaviour : MonoBehaviour
 {
-    internal const float ICON_WIDTH = 1f;
-    internal const float ICON_HEIGHT = 1f;
+    internal const float ICON_WIDTH = 1.6f;
+    internal const float ICON_HEIGHT = 1.6f;
 
     //destroying animation
     private const float DESTROY_TIME = 0.3f;
 
     //moving animation
-    private const float MOVE_TIME = 0.25f;
+    private const float MOVE_TIME = 4f;
 
     //swipe support
     internal static ChipBehaviour startSwipeChip;
@@ -121,58 +121,14 @@ public class ChipBehaviour : MonoBehaviour
 
     private void OnMouseEnter()
     {
+		return; //no click anymore
         if (GameBehaviour.GameOver)
         {
             return;
         }
         lastMouseEnterSprite = this;
     }
-
-    private void OnMouseUp()
-    {
-        if (GameBehaviour.GameOver)
-        {
-            return;
-        }
-        //some animation or moving in process, skip click
-        if (!GameBehaviour.isFieldActive) return;
-        if (startSwipeChip != lastMouseEnterSprite)
-        {
-            GameBehaviour.selectedChip = startSwipeChip;
-            if (IsChipsAdjacent(startSwipeChip, lastMouseEnterSprite))
-                GameBehaviour.instance.TrySwipeWith(lastMouseEnterSprite);
-            return;
-        }
-
-        //uncheck chip
-        if (GameBehaviour.selectedChip == this)
-        {
-            startSwipeChip = null;
-            halo.enabled = false;
-            GameBehaviour.selectedChip = null;
-        }
-        //no previous checks
-        else if (!GameBehaviour.selectedChip)
-        {
-            halo.enabled = true;
-            GameBehaviour.selectedChip = this;
-        }
-        //try to change places?
-        else if (IsChipsAdjacent(GameBehaviour.selectedChip, this))
-        {
-            halo.enabled = false;
-            GameBehaviour.selectedChip.halo.enabled = false;
-            GameBehaviour.instance.TrySwipeWith(this);
-        }
-        //not adjacent, lets check another chip
-        else
-        {
-            GameBehaviour.selectedChip.halo.enabled = false;
-            halo.enabled = true;
-            GameBehaviour.selectedChip = this;
-        }
-    }
-
+	
     private static bool IsChipsAdjacent(ChipBehaviour firstChip, ChipBehaviour secondChip)
     {
         int xRange = Math.Abs(firstChip.col - secondChip.col);
