@@ -112,7 +112,7 @@ public class GameBehaviour : MonoBehaviour
 
         GameObject enemyIcon = GameObject.Find("EnemyPortrait");
         SpriteRenderer enemySprite = enemyIcon.GetComponent<SpriteRenderer>();
-        enemySprite.sprite = Resources.Load<Sprite>("Enemies/Enemy" + MapLogic.enemyId);
+        //enemySprite.sprite = Resources.Load<Sprite>("Enemies/Enemy" + MapLogic.enemyId);
 
         StateCaption = GameObject.Find("StateCaption");
 
@@ -153,6 +153,19 @@ public class GameBehaviour : MonoBehaviour
             turnsLeft = value;
             UpdateScore();
         }
+    }
+
+    private void Update()
+    {
+        if (!Input.GetKeyDown(KeyCode.W))
+        {
+            return;
+        }
+        if (GameOver)
+        {
+            return;
+        }
+        Win();
     }
     
     private void FixedUpdate()
@@ -577,16 +590,16 @@ public class GameBehaviour : MonoBehaviour
         }
     }
 
-    private void FillCol(int col, int count)
+    private void FillCol(int col, int count)    //нужный столбец, количество заполняющих фишек
     {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)     //количество заполняющих фишек
         {
-            var chip = (GameObject)Instantiate(Resources.Load("Chips/ChipPrefab"));
-            chip.transform.parent = field.transform;
-            var chipBehaviour = chip.GetComponent<ChipBehaviour>();
-            chipArray[MAX_ROWS - count + i, col] = chipBehaviour;
+            var chip = (GameObject)Instantiate(Resources.Load("Chips/ChipPrefab"));     //берём базовую фишку - меч
+            chip.transform.parent = field.transform;                                    //берём sprite renderer под именем "Game Field"
+            var chipBehaviour = chip.GetComponent<ChipBehaviour>();                     //берём поведение для базовой фишки
+            chipArray[MAX_ROWS - count + i, col] = chipBehaviour;                       //для взятой фишки берём поведение от базовой фишки
 
-            int type;
+            int type;                                                                   //зачем-то ещё здесь берём рандомную фишку, вне функции                
             if (i == 0 && bonusRow[col] > BASE_CHIP_TYPES)
             {
                 type = bonusRow[col];
@@ -596,10 +609,10 @@ public class GameBehaviour : MonoBehaviour
                 type = random.Next(0, BASE_CHIP_TYPES);
             }
 
-            chipBehaviour.Create(type, MAX_ROWS + i, col, true);
+            chipBehaviour.Create(type, MAX_ROWS + i, col, true);                        //создаём фишку: тип, строка, столбец, да - используем гравитацию
             //set true coords
-            chipBehaviour.row = MAX_ROWS - count + i;
-            chip.transform.position = new Vector2(chip.transform.position.x - fieldHalfWidth, -fieldHalfHeight+(MAX_COLS + i)*ChipBehaviour.ICON_HEIGHT);
+            chipBehaviour.row = MAX_ROWS - count + i;                                   //ставим настоящую логическую строку
+            chip.transform.position = new Vector2(chip.transform.position.x - fieldHalfWidth, -fieldHalfHeight+(MAX_COLS + i)*ChipBehaviour.ICON_HEIGHT); //правильная позиция
         }
     }
 
@@ -633,11 +646,12 @@ public class GameBehaviour : MonoBehaviour
                 chipArray[i, ColumnNum].MoveTo(finalPosition);
             }
         }
-
+        FillCol(0, 1);
+        /*
         bonusRow = new int[MAX_COLS];
         isFieldActive = false;
         SetPhysics(false);
-        /*this.secondChip = secondChip;
+        this.secondChip = secondChip;
         movingCounter = 0;
         selectedChip.MoveTo(secondChip.gameObject.transform.position);
         secondChip.MoveTo(selectedChip.gameObject.transform.position);*/

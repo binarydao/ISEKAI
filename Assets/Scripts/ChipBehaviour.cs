@@ -44,7 +44,7 @@ public class ChipBehaviour : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        //spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         finalColor = new Color(0.5f, 0, 1, 1);
         halo = gameObject.GetComponent("Halo") as Behaviour;
         halo.enabled = false;
